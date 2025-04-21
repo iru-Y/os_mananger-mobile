@@ -1,3 +1,4 @@
+import 'package:easy_os_mobile/widgets/custom_button.dart';
 import 'package:easy_os_mobile/widgets/input_field.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +15,10 @@ class CustomForm extends StatelessWidget {
           InputField(labelTxt: 'Email'),
           InputField(labelTxt: 'Endereço'),
           InputField(labelTxt: 'Descrição do problema'),
+          SizedBox(height: 20,),
+          CustomButton(onTap: () => {},
+          txtBtn: 'Criar',
+          ),
         ],
       ),
     );

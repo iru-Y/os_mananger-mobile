@@ -10,25 +10,29 @@ class Login extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Column(
-          children: [
-            SizedBox(height: 50,),
-            CustomTitle(title: 'BEM-VINDO'), 
-            Container(
-              margin: EdgeInsets.only(top: 20, left: 20, right: 20),
-              padding: EdgeInsets.symmetric(vertical: 26, horizontal: 20),
-              decoration: BoxDecoration(
-                border: Border.all(color: CustomColors.outlineBorder),
-                borderRadius: BorderRadius.circular(5),
-              color: CustomColors.backgroundFormColor, 
-              ),
-              child: Column(
-                children: [CustomForm()],
-              ),
-            ),
-          ],
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(height: 50),
+              CustomTitle(title: 'BEM-VINDO'),
+              groupForm(),
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  Widget groupForm() {
+    return Container(
+      margin: EdgeInsets.only(top: 20, left: 20, right: 20),
+      padding: EdgeInsets.symmetric(vertical: 26, horizontal: 20),
+      decoration: BoxDecoration(
+        border: Border.all(color: CustomColors.outlineBorder),
+        borderRadius: BorderRadius.circular(5),
+        color: CustomColors.backgroundFormColor,
+      ),
+      child: Column(children: [CustomForm()]),
     );
   }
 }
