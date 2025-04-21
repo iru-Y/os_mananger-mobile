@@ -6,15 +6,15 @@ class InputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
+    return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          SizedBox(height: 10,),
           Text(
             labelTxt, style: TextStyle(
-            fontSize: 24,
+            fontSize: 16,
           ),),
+          SizedBox(height: 5,),
           TextFormField(
             decoration: InputDecoration(
               border: OutlineInputBorder(
@@ -23,7 +23,6 @@ class InputField extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
+      );
   }
 }

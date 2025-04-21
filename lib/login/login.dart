@@ -12,11 +12,11 @@ class Login extends StatelessWidget {
       child: Scaffold(
         body: Column(
           children: [
-            SizedBox(height: 100,),
+            SizedBox(height: 50,),
             CustomTitle(title: 'BEM-VINDO'), 
             Container(
               margin: EdgeInsets.only(top: 20, left: 20, right: 20),
-              height: 300,
+              padding: EdgeInsets.symmetric(vertical: 26, horizontal: 20),
               decoration: BoxDecoration(
                 border: Border.all(color: CustomColors.outlineBorder),
                 borderRadius: BorderRadius.circular(5),
