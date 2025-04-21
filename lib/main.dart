@@ -16,8 +16,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         textTheme: TextTheme(bodyMedium: TextStyle(
           color: Colors.white,
-          fontFamily: 'Mona_Sans',
+          fontFamily: 'Work_Sans',
           fontSize: 36
+        ),
+        bodySmall: TextStyle(
+          fontFamily: 'Mona_Sans',
+          fontSize: 24
         )),
         scaffoldBackgroundColor: CustomColors.backgroundColor
       ),

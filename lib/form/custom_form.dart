@@ -6,10 +6,16 @@ class CustomForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Form(child: Column(
-      children: [
-        InputField()
-      ],
-    ));
+    return Form(
+      child: Column(
+        children: [
+          InputField(labelTxt: 'Nome Completo'),
+          InputField(labelTxt: 'Telefone'),
+          InputField(labelTxt: 'Email'),
+          InputField(labelTxt: 'Endereço'),
+          InputField(labelTxt: 'Descrição do problema'),
+        ],
+      ),
+    );
   }
 }

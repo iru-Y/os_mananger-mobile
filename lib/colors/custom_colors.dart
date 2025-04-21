@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 abstract class CustomColors {
- static final  backgroundColor = Color(0xFF010713);
- static final  backgroundFormColor = Color(0xFF08101e);
- static final  outlineBorder = Color(0xFF19273b);
+ static final  backgroundColor = Color(0xFF081028);
+ static final  backgroundFormColor = Color(0xFF0B1739);
+ static final  outlineBorder = Color(0xFF343B4F);
 }

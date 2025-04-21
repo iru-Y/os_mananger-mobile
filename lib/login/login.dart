@@ -10,17 +10,23 @@ class Login extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Container(
-          margin: EdgeInsets.only(top: 100),
-          height: 300,
-          decoration: BoxDecoration(
-            border: Border.all(color: CustomColors.outlineBorder),
-            borderRadius: BorderRadius.circular(5),
-          color: CustomColors.backgroundFormColor, 
-          ),
-          child: Column(
-            children: [CustomTitle(title: 'BEM-VINDO'), CustomForm()],
-          ),
+        body: Column(
+          children: [
+            SizedBox(height: 100,),
+            CustomTitle(title: 'BEM-VINDO'), 
+            Container(
+              margin: EdgeInsets.only(top: 20, left: 20, right: 20),
+              height: 300,
+              decoration: BoxDecoration(
+                border: Border.all(color: CustomColors.outlineBorder),
+                borderRadius: BorderRadius.circular(5),
+              color: CustomColors.backgroundFormColor, 
+              ),
+              child: Column(
+                children: [CustomForm()],
+              ),
+            ),
+          ],
         ),
       ),
     );
