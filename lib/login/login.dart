@@ -11,10 +11,13 @@ class Login extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         body: Container(
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(5),
+          margin: EdgeInsets.only(top: 100),
+          height: 300,
+          decoration: BoxDecoration(
+            border: Border.all(color: CustomColors.outlineBorder),
+            borderRadius: BorderRadius.circular(5),
           color: CustomColors.backgroundFormColor, 
           ),
-          
           child: Column(
             children: [CustomTitle(title: 'BEM-VINDO'), CustomForm()],
           ),

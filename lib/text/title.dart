@@ -7,6 +7,13 @@ class CustomTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(title, style: TextStyle(fontFamily: 'Work_Sans', fontSize: 36, fontWeight: FontWeight.bold));
+    return Text(
+      title,
+      style: TextStyle(
+        fontFamily: 'Work_Sans',
+        fontSize: 36,
+        fontWeight: FontWeight.bold,
+      ),
+    );
   }
 }
