@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 
 class InputField extends StatelessWidget {
   final String labelTxt;
-  const InputField({super.key, required this.labelTxt});
+  final TextEditingController textEditingController;
+  const InputField({super.key, required this.labelTxt, required this.textEditingController});
 
   @override
   Widget build(BuildContext context) {
@@ -14,14 +15,22 @@ class InputField extends StatelessWidget {
         Text(labelTxt, style: TextStyle(fontSize: 16)),
         SizedBox(height: 5),
         TextFormField(
+          controller: textEditingController,
           decoration: InputDecoration(
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: CustomColors.outlineBorder, width: 2),
+              borderSide: BorderSide(
+                color: CustomColors.outlineBorder,
+                width: 2,
+              ),
               borderRadius: BorderRadius.circular(5),
             ),
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: CustomColors.outlineBorder, width: 2),
-              borderRadius: BorderRadius.circular(5),)
+              borderSide: BorderSide(
+                color: CustomColors.outlineBorder,
+                width: 2,
+              ),
+              borderRadius: BorderRadius.circular(5),
+            ),
           ),
           cursorColor: Colors.white,
         ),
