@@ -1,3 +1,6 @@
+import 'package:easy_os_mobile/colors/custom_colors.dart';
+import 'package:easy_os_mobile/form/custom_form.dart';
+import 'package:easy_os_mobile/text/title.dart';
 import 'package:flutter/material.dart';
 
 class Login extends StatelessWidget {
@@ -5,11 +8,17 @@ class Login extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
+    return SafeArea(
+      child: Scaffold(
+        body: Container(
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(5),
+          color: CustomColors.backgroundFormColor, 
+          ),
           
-        ],
+          child: Column(
+            children: [CustomTitle(title: 'BEM-VINDO'), CustomForm()],
+          ),
+        ),
       ),
     );
   }

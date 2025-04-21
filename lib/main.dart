@@ -1,3 +1,4 @@
+import 'package:easy_os_mobile/colors/custom_colors.dart';
 import 'package:easy_os_mobile/login/login.dart';
 import 'package:easy_os_mobile/routes/app_routes.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        fontFamily: 'Mona_Sans'
+        textTheme: TextTheme(bodyMedium: TextStyle(
+          color: Colors.white,
+          fontFamily: 'Mona_Sans',
+          fontSize: 36
+        )),
+        scaffoldBackgroundColor: CustomColors.backgroundColor
       ),
       routes: {
         AppRoutes.home : (context) => Login()
