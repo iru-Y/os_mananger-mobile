@@ -33,6 +33,7 @@ class InputField extends StatelessWidget {
             ),
           ),
           cursorColor: Colors.white,
+          style: TextStyle(color: Colors.white),
         ),
       ],
     );
