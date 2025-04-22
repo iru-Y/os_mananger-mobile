@@ -32,7 +32,8 @@ class _CustomFormState extends State<CustomForm> {
         description: descriptionController.text.trim(),
       );
       var resp = await fetchCustomers.postUser(customerRequest);
-      if (resp?.status == 'success') Navigator.of(context).pushNamed(AppRoutes.orders);
+      if (resp?.status == 'success')
+        Navigator.of(context).pushNamed(AppRoutes.orders);
     }
 
     return Form(
@@ -57,6 +58,13 @@ class _CustomFormState extends State<CustomForm> {
           ),
           SizedBox(height: 20),
           CustomButton(onTap: postCustomer, txtBtn: 'Criar'),
+          SizedBox(height: 20,),
+          CustomButton(
+            onTap: () {
+              Navigator.of(context).pushNamed(AppRoutes.orders);
+            },
+            txtBtn: 'Pular',
+          ),
         ],
       ),
     );

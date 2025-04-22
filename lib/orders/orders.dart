@@ -1,6 +1,7 @@
 import 'package:easy_os_mobile/domain/fetch/fetch_customers.dart';
 import 'package:easy_os_mobile/domain/model/base_struct.dart';
 import 'package:easy_os_mobile/domain/model/customer_model.dart';
+import 'package:easy_os_mobile/widgets/custom_modal.dart';
 import 'package:flutter/material.dart';
 
 class Orders extends StatefulWidget {
@@ -41,9 +42,25 @@ class _OrdersState extends State<Orders> {
             itemCount: customers.length,
             itemBuilder: (context, index) {
               final customer = customers[index];
-              return ListTile(
-                title: Text(customer.fullName ?? 'Sem nome'),
-                subtitle: Text(customer.phone ?? 'Sem telefone'),
+              return CustomModal(widget: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text("Nome: ${customer.fullName!}", style: TextStyle(
+                    fontSize: 20
+                  ),),
+                  Text("Telefone ${customer.phone!}", style: TextStyle(
+                    fontSize: 20
+                  )),
+                  Text("Email: ${customer.email!}", style: TextStyle(
+                    fontSize: 20
+                  )),
+                  Text("Endereço: ${customer.fullAddress!}", style: TextStyle(
+                    fontSize: 20
+                  )),
+                  Text("Problema encontrado: ${customer.description!}",  style: TextStyle(
+                    fontSize: 20)),
+                ],)
               );
             },
           );

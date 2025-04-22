@@ -1,6 +1,7 @@
 import 'package:easy_os_mobile/colors/custom_colors.dart';
 import 'package:easy_os_mobile/form/custom_form.dart';
 import 'package:easy_os_mobile/text/title.dart';
+import 'package:easy_os_mobile/widgets/custom_modal.dart';
 import 'package:flutter/material.dart';
 
 class Login extends StatelessWidget {
@@ -15,7 +16,7 @@ class Login extends StatelessWidget {
             children: [
               SizedBox(height: 50),
               CustomTitle(title: 'BEM-VINDO'),
-              groupForm(),
+              CustomModal(widget: CustomForm(),),
             ],
           ),
         ),
@@ -23,16 +24,5 @@ class Login extends StatelessWidget {
     );
   }
 
-  Widget groupForm() {
-    return Container(
-      margin: EdgeInsets.only(top: 20, left: 20, right: 20),
-      padding: EdgeInsets.symmetric(vertical: 26, horizontal: 20),
-      decoration: BoxDecoration(
-        border: Border.all(color: CustomColors.outlineBorder),
-        borderRadius: BorderRadius.circular(5),
-        color: CustomColors.backgroundFormColor,
-      ),
-      child: Column(children: [CustomForm()]),
-    );
-  }
+ 
 }
