@@ -1,4 +1,5 @@
 abstract class AppRoutes {
-  static const String home = '/';
-  static const String orders = '/orders';
+  static const String viewOrders = '/view-orders';
+  static const String createOrders = '/orders';
+  static const String login = '/';
 }

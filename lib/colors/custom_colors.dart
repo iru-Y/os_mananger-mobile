@@ -5,4 +5,5 @@ abstract class CustomColors {
  static final  backgroundFormColor = Color(0xFF0B1739);
  static final  outlineBorder = Color(0xFF343B4F);
  static final  btnColor = Color(0xFF0067d3);
+ static final  registerColor = Color(0xFF0071e9);
 }

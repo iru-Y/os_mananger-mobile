@@ -1,37 +1,28 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'customer_model.g.dart';
+
+@JsonSerializable()
 class CustomerModel {
-  String? id;
+  int? id;
   String? email;
-  String? fullAddress;
+  @JsonKey(name: 'full_name')
   String? fullName;
   String? phone;
   String? description;
+  String? price;
 
   CustomerModel({
     this.id,
     this.email,
-    this.fullAddress,
     this.fullName,
     this.phone,
     this.description,
+    this.price,
   });
 
-  CustomerModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    email = json['email'];
-    fullAddress = json['full_address'];
-    fullName = json['full_name'];
-    phone = json['phone'];
-    description = json['description'];
-  }
+  factory CustomerModel.fromJson(Map<String, dynamic> json) =>
+      _$CustomerModelFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['email'] = email;
-    data['full_address'] = fullAddress;
-    data['full_name'] = fullName;
-    data['phone'] = phone;
-    data['description'] = description;
-    return data;
-  }
+  Map<String, dynamic> toJson() => _$CustomerModelToJson(this);
 }

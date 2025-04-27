@@ -1,39 +1,38 @@
-import 'package:easy_os_mobile/domain/fetch/fetch_customers.dart';
+import 'package:easy_os_mobile/domain/api/customer_api.dart';
 import 'package:easy_os_mobile/domain/schema/customer_request.dart';
 import 'package:easy_os_mobile/routes/app_routes.dart';
 import 'package:easy_os_mobile/widgets/custom_button.dart';
 import 'package:easy_os_mobile/widgets/input_field.dart';
 import 'package:flutter/material.dart';
 
-class CustomForm extends StatefulWidget {
-  const CustomForm({super.key});
+class CreateOrder extends StatefulWidget {
+  const CreateOrder({super.key});
 
   @override
-  State<CustomForm> createState() => _CustomFormState();
+  State<CreateOrder> createState() => _CreateOrderState();
 }
 
-class _CustomFormState extends State<CustomForm> {
+class _CreateOrderState extends State<CreateOrder> {
   @override
   Widget build(BuildContext context) {
     final TextEditingController nameController = TextEditingController();
     final TextEditingController phoneController = TextEditingController();
     final TextEditingController emailController = TextEditingController();
-    final TextEditingController adressController = TextEditingController();
     final TextEditingController descriptionController = TextEditingController();
+    final TextEditingController priceController = TextEditingController();
 
-    final FetchCustomers fetchCustomers = FetchCustomers();
+    final CustomerApi fetchCustomers = CustomerApi();
 
     Future<void> postCustomer() async {
       CustomerRequest customerRequest = CustomerRequest(
         fullName: nameController.text.trim(),
         phone: phoneController.text.trim(),
-        email: emailController.text,
-        fullAddress: adressController.text.trim(),
+        email: emailController.text.trim(),
         description: descriptionController.text.trim(),
+        price: priceController.text,
       );
-      var resp = await fetchCustomers.postUser(customerRequest);
-      if (resp?.status == 'success')
-        Navigator.of(context).pushNamed(AppRoutes.orders);
+      await fetchCustomers.postUser(customerRequest);
+      Navigator.of(context).pushNamed(AppRoutes.viewOrders);
     }
 
     return Form(
@@ -49,19 +48,19 @@ class _CustomFormState extends State<CustomForm> {
           ),
           InputField(labelTxt: 'Email', textEditingController: emailController),
           InputField(
-            labelTxt: 'Endereço',
-            textEditingController: adressController,
-          ),
-          InputField(
             labelTxt: 'Descrição do problema',
             textEditingController: descriptionController,
           ),
+          InputField(
+            labelTxt: 'Preço do serviço',
+            textEditingController: priceController,
+          ),
           SizedBox(height: 20),
           CustomButton(onTap: postCustomer, txtBtn: 'Criar'),
-          SizedBox(height: 20,),
+          SizedBox(height: 20),
           CustomButton(
             onTap: () {
-              Navigator.of(context).pushNamed(AppRoutes.orders);
+              Navigator.of(context).pushNamed(AppRoutes.viewOrders);
             },
             txtBtn: 'Pular',
           ),

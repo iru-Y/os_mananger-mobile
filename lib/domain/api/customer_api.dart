@@ -1,13 +1,12 @@
 import 'dart:convert';
-import 'package:easy_os_mobile/domain/model/base_struct.dart';
 import 'package:easy_os_mobile/domain/model/customer_model.dart';
 import 'package:easy_os_mobile/domain/schema/customer_request.dart';
 import 'package:easy_os_mobile/utils/api_path.dart';
 import 'package:http/http.dart' as http;
 
-class FetchCustomers {
-  Future<BaseStruct<CustomerModel>?> postUser(CustomerRequest customer) async {
-    final url = Uri.parse('$apiPath/customers');
+class CustomerApi {
+  Future<CustomerModel?> postUser(CustomerRequest customer) async {
+    final url = Uri.parse('$apiPath/customers/');
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode(customer.toJson());
 
@@ -16,10 +15,7 @@ class FetchCustomers {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final jsonResponse = jsonDecode(response.body);
-        final baseStruct = BaseStruct<CustomerModel>.fromJson(
-          jsonResponse,
-          (item) => CustomerModel.fromJson(item),
-        );
+        final baseStruct = CustomerModel.fromJson(jsonResponse);
         return baseStruct;
       } else {
         print('Erro no POST: ${response.statusCode} - ${response.body}');
@@ -31,7 +27,7 @@ class FetchCustomers {
     }
   }
 
-  Future<BaseStruct<List<CustomerModel>>?> getAllCustomers() async {
+  Future<List<CustomerModel>?> getAllCustomers() async {
     final url = Uri.parse('$apiPath/customers');
     final headers = {'Content-Type': 'application/json'};
 
@@ -39,15 +35,11 @@ class FetchCustomers {
       final response = await http.get(url, headers: headers);
 
       if (response.statusCode == 200) {
-        final jsonResponse = jsonDecode(response.body);
-        final baseStruct = BaseStruct<List<CustomerModel>>.fromJson(
-          jsonResponse,
-          (list) =>
-              (list as List)
-                  .map((item) => CustomerModel.fromJson(item))
-                  .toList(),
-        );
-        return baseStruct;
+        final jsonResponse = jsonDecode(response.body) as List;
+        final customers =
+            jsonResponse.map((item) => CustomerModel.fromJson(item)).toList();
+
+        return customers;
       } else {
         print('Erro no GET: ${response.statusCode} - ${response.body}');
         return null;
