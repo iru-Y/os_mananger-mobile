@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:easy_os_mobile/utils/api_path.dart';
 import 'package:http/http.dart' as http;
 
 class JwtRequest {
-  final String baseUrl = 'https://exemplo.com/api/';
+  final url = Uri.parse('$apiPath/customers/');
+
 
   Future<void> fetchToken(String token) async {
     final headers = {
@@ -11,7 +13,7 @@ class JwtRequest {
     };
 
     final response = await http.get(
-      Uri.parse('$baseUrl/data'),
+      Uri.parse('$url/token/'),
       headers: headers,
     );
 
@@ -30,7 +32,7 @@ class JwtRequest {
     };
 
     final response = await http.post(
-      Uri.parse('$baseUrl/login'),
+      Uri.parse('$url/token/'),
       headers: headers,
       body: json.encode(body),
     );
