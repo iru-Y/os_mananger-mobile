@@ -5,6 +5,17 @@ import 'package:http/http.dart' as http;
 class JwtRequest {
   final url = Uri.parse('$apiPath/customers/');
 
+  Future<String> getToken(String username, String password) async {
+    final response = await http.post(
+      Uri.parse('$url/token/'),
+      body: json.encode({'username': username, 'password': password}),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response == 200) {
+      // TODO
+    }
+  }
 
   Future<void> fetchToken(String token) async {
     final headers = {
@@ -12,10 +23,7 @@ class JwtRequest {
       'Content-Type': 'application/json',
     };
 
-    final response = await http.get(
-      Uri.parse('$url/token/'),
-      headers: headers,
-    );
+    final response = await http.get(Uri.parse('$url/token/'), headers: headers);
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
