@@ -3,14 +3,14 @@ import 'package:easy_os_mobile/domain/model/customer_model.dart';
 import 'package:easy_os_mobile/widgets/custom_modal.dart';
 import 'package:flutter/material.dart';
 
-class ViewOrders extends StatefulWidget {
-  const ViewOrders({super.key});
+class ShowOrders extends StatefulWidget {
+  const ShowOrders({super.key});
 
   @override
-  State<ViewOrders> createState() => _ViewOrdersState();
+  State<ShowOrders> createState() => _ShowOrdersState();
 }
 
-class _ViewOrdersState extends State<ViewOrders> {
+class _ShowOrdersState extends State<ShowOrders> {
   final CustomerApi fetchCustomers = CustomerApi();
   late Future<List<CustomerModel>?> futureCustomers;
 

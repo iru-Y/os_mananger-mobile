@@ -1,54 +1,28 @@
 import 'dart:convert';
 import 'package:easy_os_mobile/utils/api_path.dart';
 import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
 
+final Logger logger = Logger();
 class JwtRequest {
-  final url = Uri.parse('$apiPath/customers/');
+
+  final url = Uri.parse('$apiPath/token/');
 
   Future<String> getToken(String username, String password) async {
     final response = await http.post(
-      Uri.parse('$url/token/'),
+      url,
       body: json.encode({'username': username, 'password': password}),
       headers: {'Content-Type': 'application/json'},
     );
 
-    if (response == 200) {
-      // TODO
-    }
-  }
-
-  Future<void> fetchToken(String token) async {
-    final headers = {
-      'Authorization': 'Bearer $token',
-      'Content-Type': 'application/json',
-    };
-
-    final response = await http.get(Uri.parse('$url/token/'), headers: headers);
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      print('Dados recebidos: $data');
+    if (response.statusCode == 201) {
+      logger.i('Erro ao fazer requisição de token ${response.statusCode}');
+      return json.decode(response.body);
     } else {
-      print('Erro ao fazer requisição: ${response.statusCode}');
-    }
-  }
-
-  Future<void> postToken(String token, Map<String, dynamic> body) async {
-    final headers = {
-      'Authorization': 'Bearer $token',
-      'Content-Type': 'application/json',
-    };
-
-    final response = await http.post(
-      Uri.parse('$url/token/'),
-      headers: headers,
-      body: json.encode(body),
-    );
-
-    if (response.statusCode == 200) {
-      print('Sucesso: ${response.body}');
-    } else {
-      print('Erro: ${response.statusCode}');
+      logger.e('Erro ao fazer requisição de token ${response.statusCode}');
+      throw Exception(
+        'Erro ao fazer requisição de token: getToken ${response.statusCode}',
+      );
     }
   }
 }
