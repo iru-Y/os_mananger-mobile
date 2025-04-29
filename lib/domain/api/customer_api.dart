@@ -1,18 +1,18 @@
 import 'dart:convert';
 import 'package:easy_os_mobile/domain/model/customer_model.dart';
 import 'package:easy_os_mobile/domain/schema/customer_request.dart';
+import 'package:easy_os_mobile/domain/secure_storage/secure_storage_service.dart';
 import 'package:easy_os_mobile/utils/api_path.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
 class CustomerApi {
   final Logger logger = Logger();
+  final SecureStorageService _secureStorage = SecureStorageService();
 
-  Future<CustomerModel?> postUser(
-    CustomerRequest customer,
-    String token,
-  ) async {
+  Future<CustomerModel?> postUser(CustomerRequest customer) async {
     final url = Uri.parse('$apiPath/customers/');
+    final token = await _secureStorage.getToken();
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -37,8 +37,9 @@ class CustomerApi {
     }
   }
 
-  Future<List<CustomerModel>?> getAllCustomers(String token) async {
+  Future<List<CustomerModel>?> getAllCustomers() async {
     final url = Uri.parse('$apiPath/customers');
+    final token = await _secureStorage.getToken();
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',

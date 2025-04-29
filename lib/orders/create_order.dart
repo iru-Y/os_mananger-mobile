@@ -32,6 +32,7 @@ class _CreateOrderState extends State<CreateOrder> {
         price: priceController.text,
       );
       await fetchCustomers.postUser(customerRequest);
+      if (!mounted) return;
       Navigator.of(context).pushNamed(AppRoutes.viewOrders);
     }
 
