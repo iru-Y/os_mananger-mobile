@@ -13,6 +13,7 @@ class CustomerApi {
   Future<CustomerModel?> postUser(CustomerRequest customer) async {
     final url = Uri.parse('$apiPath/customers/');
     final token = await _secureStorage.getToken();
+    logger.i('Token usado na requisição: $token');
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -40,6 +41,8 @@ class CustomerApi {
   Future<List<CustomerModel>?> getAllCustomers() async {
     final url = Uri.parse('$apiPath/customers');
     final token = await _secureStorage.getToken();
+    logger.i('Token usado na requisição: $token');
+    
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',

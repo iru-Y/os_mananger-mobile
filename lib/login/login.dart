@@ -1,5 +1,6 @@
 import 'package:easy_os_mobile/colors/custom_colors.dart';
 import 'package:easy_os_mobile/domain/api/jwt_request.dart';
+import 'package:easy_os_mobile/domain/secure_storage/secure_storage_service.dart';
 import 'package:easy_os_mobile/routes/app_routes.dart';
 import 'package:easy_os_mobile/text/custom_sub_title.dart';
 import 'package:easy_os_mobile/text/custom_title.dart';
@@ -30,6 +31,7 @@ class _LoginState extends State<Login> {
       final token = await jwtRequest.getToken(username, password);
 
       logger.i('Login bem-sucedido — token: $token');
+      await SecureStorageService().saveToken(token);
 
       if (!mounted) return;
 
