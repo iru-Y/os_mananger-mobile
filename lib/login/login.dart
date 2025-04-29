@@ -21,11 +21,39 @@ class _LoginState extends State<Login> {
   final TextEditingController userNameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final JwtRequest jwtRequest = JwtRequest();
+
   void login() async {
-    final username = userNameController.text;
+    final username = userNameController.text.trim();
     final password = passwordController.text;
 
-    jwtRequest.getToken(username, password);
+    try {
+      final token = await jwtRequest.getToken(username, password);
+
+      logger.i('Login bem-sucedido — token: $token');
+
+      if (!mounted) return;
+
+      Navigator.of(context).pushReplacementNamed(AppRoutes.drawer);
+    } catch (e, stack) {
+      logger.e('Erro no login', error: e, stackTrace: stack);
+
+      if (!mounted) return;
+
+      showDialog(
+        context: context,
+        builder:
+            (_) => AlertDialog(
+              title: Text('Erro'),
+              content: Text(
+                'Erro ao fazer login, verifique suas credenciais e tente novamente.',
+              ),
+              icon: IconButton(
+                onPressed: () => Navigator.of(context).pop,
+                icon: Icon(Icons.close),
+              ),
+            ),
+      );
+    }
   }
 
   @override
@@ -57,7 +85,9 @@ class _LoginState extends State<Login> {
                           Navigator.of(
                             context,
                           ).pushReplacementNamed(AppRoutes.drawer),
-                          logger.i('Navegação bem sucedida, indo para o cadastro de nova ordem de serviço')
+                          logger.i(
+                            'Navegação bem sucedida, indo para o cadastro de nova ordem de serviço',
+                          ),
                         },
                   ),
                   SizedBox(height: 10),

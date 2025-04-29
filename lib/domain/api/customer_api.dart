@@ -8,9 +8,15 @@ import 'package:logger/logger.dart';
 class CustomerApi {
   final Logger logger = Logger();
 
-  Future<CustomerModel?> postUser(CustomerRequest customer) async {
+  Future<CustomerModel?> postUser(
+    CustomerRequest customer,
+    String token,
+  ) async {
     final url = Uri.parse('$apiPath/customers/');
-    final headers = {'Content-Type': 'application/json'};
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
     final body = jsonEncode(customer.toJson());
 
     try {
@@ -31,18 +37,20 @@ class CustomerApi {
     }
   }
 
-  Future<List<CustomerModel>?> getAllCustomers() async {
+  Future<List<CustomerModel>?> getAllCustomers(String token) async {
     final url = Uri.parse('$apiPath/customers');
-    final headers = {'Content-Type': 'application/json'};
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
 
     try {
       final response = await http.get(url, headers: headers);
 
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body) as List;
-        final customers = jsonResponse
-            .map((item) => CustomerModel.fromJson(item))
-            .toList();
+        final customers =
+            jsonResponse.map((item) => CustomerModel.fromJson(item)).toList();
         logger.i('Clientes recuperados: ${customers.length}');
         return customers;
       } else {
