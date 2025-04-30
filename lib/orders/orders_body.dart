@@ -1,4 +1,4 @@
-import 'package:easy_os_mobile/drawer/app_drawer.dart';
+import 'package:easy_os_mobile/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 
 class OrdersBody extends StatelessWidget {
@@ -11,15 +11,25 @@ class OrdersBody extends StatelessWidget {
         title: Text('Ordens de Serviço'),
         leading: Builder(
           builder:
-              (context) => IconButton(
-                icon: Icon(Icons.menu),
-                onPressed: () {
-                  Scaffold.of(context).openDrawer();
-                },
+              (context) => Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_back),
+                    onPressed: () {
+                      Navigator.of(context).popAndPushNamed(AppRoutes.login);
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.post_add),
+                    onPressed: () {
+                      Navigator.of(context).popAndPushNamed(AppRoutes.createOrders);
+                    },
+                  ),
+                ],
               ),
         ),
       ),
-      drawer: const AppDrawer(),
       body: Center(child: Text('Lista de Ordens de Serviço')),
     );
   }

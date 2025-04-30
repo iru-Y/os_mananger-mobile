@@ -107,6 +107,7 @@ class _LoginState extends State<Login> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Checkbox(
+                        activeColor: CustomColors.btnColor,
                         value: rememberMe,
                         onChanged: (bool? value) {
                           setState(() => rememberMe = value ?? false);
