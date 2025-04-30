@@ -1,7 +1,7 @@
 import 'package:easy_os_mobile/colors/custom_colors.dart';
-import 'package:easy_os_mobile/drawer/app_drawer.dart';
 import 'package:easy_os_mobile/login/login.dart';
 import 'package:easy_os_mobile/orders/create_order.dart';
+import 'package:easy_os_mobile/orders/orders_body.dart';
 import 'package:easy_os_mobile/orders/show_orders.dart';
 import 'package:easy_os_mobile/routes/app_routes.dart';
 import 'package:flutter/material.dart';
@@ -30,10 +30,10 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: CustomColors.backgroundColor,
       ),
       routes: {
-        AppRoutes.viewOrders: (context) => ShowOrders(),
+        AppRoutes.showOrders: (context) => ShowOrders(),
         AppRoutes.createOrders: (context) => CreateOrder(),
         AppRoutes.login: (context) => Login(),
-        AppRoutes.drawer: (context) => AppDrawer(),
+        AppRoutes.ordersBody: (context) => OrdersBody(),
       },
     );
   }

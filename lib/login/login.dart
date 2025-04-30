@@ -22,6 +22,25 @@ class _LoginState extends State<Login> {
   final TextEditingController userNameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final JwtRequest jwtRequest = JwtRequest();
+  final SecureStorageService storage = SecureStorageService();
+
+  bool rememberMe = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedCredentials();
+  }
+
+  Future<void> _loadSavedCredentials() async {
+    final savedUser = await storage.getValue('saved_user');
+    final savedPass = await storage.getValue('saved_pass');
+    if (savedUser != null && savedPass != null) {
+      userNameController.text = savedUser;
+      passwordController.text = savedPass;
+      setState(() => rememberMe = true);
+    }
+  }
 
   void login() async {
     final username = userNameController.text.trim();
@@ -29,18 +48,22 @@ class _LoginState extends State<Login> {
 
     try {
       final token = await jwtRequest.getToken(username, password);
-
       logger.i('Login bem-sucedido — token: $token');
-      await SecureStorageService().saveToken(token);
+
+      await storage.saveToken(token);
+      if (rememberMe) {
+        await storage.saveValue('saved_user', username);
+        await storage.saveValue('saved_pass', password);
+      } else {
+        await storage.deleteValue('saved_user');
+        await storage.deleteValue('saved_pass');
+      }
 
       if (!mounted) return;
-
-      Navigator.of(context).pushReplacementNamed(AppRoutes.drawer);
+      Navigator.of(context).pushReplacementNamed(AppRoutes.ordersBody);
     } catch (e, stack) {
       logger.e('Erro no login', error: e, stackTrace: stack);
-
       if (!mounted) return;
-
       showDialog(
         context: context,
         builder:
@@ -49,10 +72,12 @@ class _LoginState extends State<Login> {
               content: Text(
                 'Erro ao fazer login, verifique suas credenciais e tente novamente.',
               ),
-              icon: IconButton(
-                onPressed: () => Navigator.of(context).pop,
-                icon: Icon(Icons.close),
-              ),
+              actions: [
+                IconButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: Icon(Icons.close),
+                ),
+              ],
             ),
       );
     }
@@ -74,24 +99,23 @@ class _LoginState extends State<Login> {
                     textEditingController: userNameController,
                   ),
                   InputField(
+                    obscureText: true,
                     labelTxt: 'Senha',
                     textEditingController: passwordController,
                   ),
-                  SizedBox(height: 20),
-                  CustomButton(
-                    txtBtn: 'Entrar',
-                    onTap:
-                        () => {
-                          login(),
-                          logger.i('Login bem sucedido, gerando token...'),
-                          Navigator.of(
-                            context,
-                          ).pushReplacementNamed(AppRoutes.drawer),
-                          logger.i(
-                            'Navegação bem sucedida, indo para o cadastro de nova ordem de serviço',
-                          ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Checkbox(
+                        value: rememberMe,
+                        onChanged: (bool? value) {
+                          setState(() => rememberMe = value ?? false);
                         },
+                      ),
+                     CustomSubTitle(title: 'Salvar Login e Senha?'),
+                    ],
                   ),
+                  CustomButton(txtBtn: 'Entrar', onTap: login),
                   SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

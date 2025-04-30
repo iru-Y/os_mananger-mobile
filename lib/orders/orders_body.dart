@@ -1,8 +1,8 @@
 import 'package:easy_os_mobile/drawer/app_drawer.dart';
 import 'package:flutter/material.dart';
 
-class OrdersView extends StatelessWidget {
-  const OrdersView({super.key});
+class OrdersBody extends StatelessWidget {
+  const OrdersBody({super.key});
 
   @override
   Widget build(BuildContext context) {

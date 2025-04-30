@@ -33,7 +33,7 @@ class _CreateOrderState extends State<CreateOrder> {
       );
       await fetchCustomers.postUser(customerRequest);
       if (!mounted) return;
-      Navigator.of(context).pushNamed(AppRoutes.viewOrders);
+      Navigator.of(context).pushNamed(AppRoutes.ordersBody);
     }
 
     return Form(
@@ -61,7 +61,7 @@ class _CreateOrderState extends State<CreateOrder> {
           SizedBox(height: 20),
           CustomButton(
             onTap: () {
-              Navigator.of(context).pushNamed(AppRoutes.viewOrders);
+              Navigator.of(context).pushNamed(AppRoutes.ordersBody);
             },
             txtBtn: 'Pular',
           ),

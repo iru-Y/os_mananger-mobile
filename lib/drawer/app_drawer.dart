@@ -21,7 +21,7 @@ class AppDrawer extends StatelessWidget {
             onTap:
                 () => Navigator.of(
                   context,
-                ).pushReplacementNamed(AppRoutes.viewOrders),
+                ).pushReplacementNamed(AppRoutes.showOrders),
           ),
         ],
       ),
