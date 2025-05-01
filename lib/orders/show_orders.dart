@@ -1,3 +1,4 @@
+import 'package:easy_os_mobile/colors/custom_colors.dart';
 import 'package:easy_os_mobile/domain/api/customer_api.dart';
 import 'package:easy_os_mobile/domain/model/customer_model.dart';
 import 'package:easy_os_mobile/widgets/form_wrapper.dart';
@@ -40,8 +41,12 @@ class _ShowOrdersState extends State<ShowOrders> {
             itemCount: customers.length,
             itemBuilder: (context, index) {
               final customer = customers[index];
-              return FormWrapper(
-                widget: Column(
+              return Card(
+                elevation: 4,
+                shape: Border.all(color: CustomColors.outlineBorder),
+                margin: EdgeInsets.only(top: 20, left: 20, right: 20),
+                color: CustomColors.registerColor,
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
