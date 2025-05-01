@@ -2,6 +2,7 @@ import 'package:easy_os_mobile/domain/api/customer_api.dart';
 import 'package:easy_os_mobile/domain/schema/customer_request.dart';
 import 'package:easy_os_mobile/routes/app_routes.dart';
 import 'package:easy_os_mobile/widgets/custom_button.dart';
+import 'package:easy_os_mobile/widgets/form_wrapper.dart';
 import 'package:easy_os_mobile/widgets/input_field.dart';
 import 'package:flutter/material.dart';
 
@@ -36,36 +37,40 @@ class _CreateOrderState extends State<CreateOrder> {
       Navigator.of(context).pushNamed(AppRoutes.ordersBody);
     }
 
-    return Form(
-      child: Column(
-        children: [
-          InputField(
-            labelTxt: 'Nome Completo',
-            textEditingController: nameController,
+    return Scaffold(
+      body: FormWrapper(
+        widget: Form(
+          child: Column(
+            children: [
+              InputField(
+                labelTxt: 'Nome Completo',
+                textEditingController: nameController,
+              ),
+              InputField(
+                labelTxt: 'Telefone',
+                textEditingController: phoneController,
+              ),
+              InputField(labelTxt: 'Email', textEditingController: emailController),
+              InputField(
+                labelTxt: 'Descrição do problema',
+                textEditingController: descriptionController,
+              ),
+              InputField(
+                labelTxt: 'Preço do serviço',
+                textEditingController: priceController,
+              ),
+              SizedBox(height: 20),
+              CustomButton(onTap: postCustomer, txtBtn: 'Criar'),
+              SizedBox(height: 20),
+              CustomButton(
+                onTap: () {
+                  Navigator.of(context).pushNamed(AppRoutes.ordersBody);
+                },
+                txtBtn: 'Pular',
+              ),
+            ],
           ),
-          InputField(
-            labelTxt: 'Telefone',
-            textEditingController: phoneController,
-          ),
-          InputField(labelTxt: 'Email', textEditingController: emailController),
-          InputField(
-            labelTxt: 'Descrição do problema',
-            textEditingController: descriptionController,
-          ),
-          InputField(
-            labelTxt: 'Preço do serviço',
-            textEditingController: priceController,
-          ),
-          SizedBox(height: 20),
-          CustomButton(onTap: postCustomer, txtBtn: 'Criar'),
-          SizedBox(height: 20),
-          CustomButton(
-            onTap: () {
-              Navigator.of(context).pushNamed(AppRoutes.ordersBody);
-            },
-            txtBtn: 'Pular',
-          ),
-        ],
+        ),
       ),
     );
   }

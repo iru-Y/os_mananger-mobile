@@ -1,3 +1,4 @@
+import 'package:easy_os_mobile/orders/show_orders.dart';
 import 'package:easy_os_mobile/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 
@@ -9,10 +10,10 @@ class OrdersBody extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Ordens de Serviço'),
+        centerTitle: true,
         leading: Builder(
           builder:
               (context) => Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   IconButton(
                     icon: Icon(Icons.arrow_back),
@@ -20,17 +21,19 @@ class OrdersBody extends StatelessWidget {
                       Navigator.of(context).popAndPushNamed(AppRoutes.login);
                     },
                   ),
-                  IconButton(
-                    icon: Icon(Icons.post_add),
-                    onPressed: () {
-                      Navigator.of(context).popAndPushNamed(AppRoutes.createOrders);
-                    },
-                  ),
                 ],
               ),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.post_add),
+            onPressed: () {
+              Navigator.of(context).popAndPushNamed(AppRoutes.createOrders);
+            },
+          ),
+        ],
       ),
-      body: Center(child: Text('Lista de Ordens de Serviço')),
+      body: ShowOrders(),
     );
   }
 }

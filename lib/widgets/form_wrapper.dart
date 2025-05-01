@@ -1,9 +1,9 @@
 import 'package:easy_os_mobile/colors/custom_colors.dart';
 import 'package:flutter/material.dart';
 
-class CustomModal extends StatelessWidget {
+class FormWrapper extends StatelessWidget {
   final Widget widget;
-  const CustomModal({super.key, required this.widget});
+  const FormWrapper({super.key, required this.widget});
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,6 @@
 import 'package:easy_os_mobile/domain/api/customer_api.dart';
 import 'package:easy_os_mobile/domain/model/customer_model.dart';
-import 'package:easy_os_mobile/widgets/custom_modal.dart';
+import 'package:easy_os_mobile/widgets/form_wrapper.dart';
 import 'package:flutter/material.dart';
 
 class ShowOrders extends StatefulWidget {
@@ -40,7 +40,7 @@ class _ShowOrdersState extends State<ShowOrders> {
             itemCount: customers.length,
             itemBuilder: (context, index) {
               final customer = customers[index];
-              return CustomModal(
+              return FormWrapper(
                 widget: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,

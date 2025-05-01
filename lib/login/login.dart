@@ -5,7 +5,7 @@ import 'package:easy_os_mobile/routes/app_routes.dart';
 import 'package:easy_os_mobile/text/custom_sub_title.dart';
 import 'package:easy_os_mobile/text/custom_title.dart';
 import 'package:easy_os_mobile/widgets/custom_button.dart';
-import 'package:easy_os_mobile/widgets/custom_modal.dart';
+import 'package:easy_os_mobile/widgets/form_wrapper.dart';
 import 'package:easy_os_mobile/widgets/input_field.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
@@ -90,7 +90,7 @@ class _LoginState extends State<Login> {
         children: [
           SizedBox(height: 100),
           CustomTitle(title: 'Bem-vindo'),
-          CustomModal(
+          FormWrapper(
             widget: Form(
               child: Column(
                 children: [
@@ -113,7 +113,7 @@ class _LoginState extends State<Login> {
                           setState(() => rememberMe = value ?? false);
                         },
                       ),
-                     CustomSubTitle(title: 'Salvar Login e Senha?'),
+                      CustomSubTitle(title: 'Salvar Login e Senha?'),
                     ],
                   ),
                   CustomButton(txtBtn: 'Entrar', onTap: login),
