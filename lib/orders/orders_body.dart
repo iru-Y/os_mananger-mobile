@@ -20,11 +20,20 @@ class OrdersBody extends StatelessWidget {
           fontSize: 20,
           fontWeight: FontWeight.w600,
         ),
+
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.of(context).popAndPushNamed(AppRoutes.login);
           },
+        ),
+         bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(0.5), 
+          child: Divider(
+            height: 0.5,
+            thickness: 0.5,
+            color: Colors.white,
+          ),
         ),
         actions: [
           IconButton(
