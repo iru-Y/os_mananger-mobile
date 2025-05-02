@@ -2,20 +2,27 @@ import 'package:easy_os_mobile/colors/custom_colors.dart';
 import 'package:flutter/material.dart';
 
 class FormWrapper extends StatelessWidget {
-  final Widget widget;
-  const FormWrapper({super.key, required this.widget});
+  final Widget child;
+  const FormWrapper({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top: 20, left: 20, right: 20),
-      padding: EdgeInsets.symmetric(vertical: 26, horizontal: 20),
-      decoration: BoxDecoration(
-        border: Border.all(color: CustomColors.outlineBorder),
-        borderRadius: BorderRadius.circular(5),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      child: Card(
+        borderOnForeground: true,
+        elevation: 10,
+        shadowColor: Color.fromRGBO(0, 0, 0, 0.4),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+          side: BorderSide(color: CustomColors.outlineBorder),
+        ),
         color: CustomColors.backgroundFormColor,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 26, horizontal: 20),
+          child: child,
+        ),
       ),
-      child: Column(children: [widget]),
     );
   }
 }

@@ -91,7 +91,7 @@ class _LoginState extends State<Login> {
           SizedBox(height: 100),
           CustomTitle(title: 'Bem-vindo'),
           FormWrapper(
-            widget: Form(
+            child: Form(
               child: Column(
                 children: [
                   InputField(

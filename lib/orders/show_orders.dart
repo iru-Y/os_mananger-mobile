@@ -1,7 +1,6 @@
 import 'package:easy_os_mobile/colors/custom_colors.dart';
 import 'package:easy_os_mobile/domain/api/customer_api.dart';
 import 'package:easy_os_mobile/domain/model/customer_model.dart';
-import 'package:easy_os_mobile/widgets/form_wrapper.dart';
 import 'package:flutter/material.dart';
 
 class ShowOrders extends StatefulWidget {
@@ -42,35 +41,42 @@ class _ShowOrdersState extends State<ShowOrders> {
             itemBuilder: (context, index) {
               final customer = customers[index];
               return Card(
-                elevation: 4,
-                shape: Border.all(color: CustomColors.outlineBorder),
+                elevation: 10,
+                borderOnForeground: true,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                  side: BorderSide(color: CustomColors.outlineBorder),
+                ),
                 margin: EdgeInsets.only(top: 20, left: 20, right: 20),
-                color: CustomColors.registerColor,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Nome: ${customer.fullName!}",
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    Text(
-                      "Telefone ${customer.phone!}",
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    Text(
-                      "Email: ${customer.email!}",
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    Text(
-                      "Problema encontrado: ${customer.description!}",
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    Text(
-                      "Preço: R\$ ${customer.price!}",
-                      style: TextStyle(fontSize: 20),
-                    ),
-                  ],
+                color: CustomColors.backgroundFormColor,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 26, horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Nome: ${customer.fullName!}",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      Text(
+                        "Telefone ${customer.phone!}",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      Text(
+                        "Email: ${customer.email!}",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      Text(
+                        "Problema encontrado: ${customer.description!}",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      Text(
+                        "Preço: R\$ ${customer.price!}",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ],
+                  ),
                 ),
               );
             },

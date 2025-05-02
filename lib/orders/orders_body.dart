@@ -1,3 +1,4 @@
+import 'package:easy_os_mobile/colors/custom_colors.dart';
 import 'package:easy_os_mobile/orders/show_orders.dart';
 import 'package:easy_os_mobile/routes/app_routes.dart';
 import 'package:flutter/material.dart';
@@ -9,31 +10,32 @@ class OrdersBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Ordens de Serviço'),
+        title: const Text('Ordens de Serviço'),
         centerTitle: true,
-        leading: Builder(
-          builder:
-              (context) => Row(
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.arrow_back),
-                    onPressed: () {
-                      Navigator.of(context).popAndPushNamed(AppRoutes.login);
-                    },
-                  ),
-                ],
-              ),
+        backgroundColor: CustomColors.backgroundColor,
+        iconTheme: const IconThemeData(color: Colors.white),
+        actionsIconTheme: const IconThemeData(color: Colors.white),
+        titleTextStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).popAndPushNamed(AppRoutes.login);
+          },
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.post_add),
+            icon: const Icon(Icons.post_add),
             onPressed: () {
               Navigator.of(context).popAndPushNamed(AppRoutes.createOrders);
             },
           ),
         ],
       ),
-      body: ShowOrders(),
+      body: const ShowOrders(),
     );
   }
 }
