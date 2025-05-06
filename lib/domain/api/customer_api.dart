@@ -42,7 +42,7 @@ class CustomerApi {
     final url = Uri.parse('$apiPath/customers');
     final token = await _secureStorage.getToken();
     logger.i('Token usado na requisição: $token');
-    
+
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -64,6 +64,62 @@ class CustomerApi {
     } catch (e, stackTrace) {
       logger.e('Erro na requisição GET', error: e, stackTrace: stackTrace);
       return null;
+    }
+  }
+
+  Future<CustomerModel?> patchCustomer(
+    int id,
+    Map<String, dynamic> updates,
+  ) async {
+    final url = Uri.parse('$apiPath/customers/$id/');
+    final token = await _secureStorage.getToken();
+    logger.i('Token usado na requisição PATCH: $token');
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+
+    final body = jsonEncode(updates);
+
+    try {
+      final response = await http.patch(url, headers: headers, body: body);
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        final updatedCustomer = CustomerModel.fromJson(jsonResponse);
+        logger.i('Cliente atualizado: ${response.body}');
+        return updatedCustomer;
+      } else {
+        logger.e('Erro no PATCH: ${response.statusCode} - ${response.body}');
+        return null;
+      }
+    } catch (e, stackTrace) {
+      logger.e('Erro na requisição PATCH', error: e, stackTrace: stackTrace);
+      return null;
+    }
+  }
+
+  Future<bool> deleteCustomer(int id) async {
+    final url = Uri.parse('$apiPath/customers/$id/');
+    final token = await _secureStorage.getToken();
+    logger.i('Token usado na requisição DELETE: $token');
+
+    final headers = {'Authorization': 'Bearer $token'};
+
+    try {
+      final response = await http.delete(url, headers: headers);
+
+      if (response.statusCode == 204) {
+        logger.i('Cliente deletado com sucesso.');
+        return true;
+      } else {
+        logger.e('Erro no DELETE: ${response.statusCode} - ${response.body}');
+        return false;
+      }
+    } catch (e, stackTrace) {
+      logger.e('Erro na requisição DELETE', error: e, stackTrace: stackTrace);
+      return false;
     }
   }
 }

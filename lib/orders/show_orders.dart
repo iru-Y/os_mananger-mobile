@@ -36,50 +36,68 @@ class _ShowOrdersState extends State<ShowOrders> {
 
           final customers = snapshot.data!;
 
-          return ListView.builder(
-            itemCount: customers.length,
-            itemBuilder: (context, index) {
-              final customer = customers[index];
-              return Card(
-                elevation: 10,
-                borderOnForeground: true,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
-                  side: BorderSide(color: CustomColors.outlineBorder),
-                ),
-                margin: EdgeInsets.only(top: 20, left: 20, right: 20),
-                color: CustomColors.backgroundFormColor,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 26, horizontal: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Nome: ${customer.fullName!}",
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      Text(
-                        "Telefone ${customer.phone!}",
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      Text(
-                        "Email: ${customer.email!}",
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      Text(
-                        "Problema encontrado: ${customer.description!}",
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      Text(
-                        "Preço: R\$ ${customer.price!}",
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    ],
-                  ),
-                ),
-              );
+          return RefreshIndicator(
+            onRefresh: () async {
+              setState(() {
+                futureCustomers = fetchCustomers.getAllCustomers();
+              });
             },
+            child: ListView.builder(
+              itemCount: customers.length,
+              itemBuilder: (context, index) {
+                final customer = customers[index];
+                return Card(
+                  elevation: 10,
+                  borderOnForeground: true,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                    side: BorderSide(color: CustomColors.outlineBorder),
+                  ),
+                  margin: EdgeInsets.only(top: 20, left: 20, right: 20),
+                  color: CustomColors.backgroundFormColor,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 26, horizontal: 20),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Nome: ${customer.fullName!}",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              Text(
+                                "Telefone: ${customer.phone!}",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              Text(
+                                "Email: ${customer.email!}",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              Text(
+                                "Problema encontrado: ${customer.description!}",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              Text(
+                                "Preço: R\$ ${customer.price!}",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            
+                          },
+                          icon: Icon(Icons.edit),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
           );
         },
       ),
