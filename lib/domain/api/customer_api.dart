@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:easy_os_mobile/domain/api/jwt_request.dart';
 import 'package:easy_os_mobile/domain/model/customer_model.dart';
 import 'package:easy_os_mobile/domain/schema/customer_request.dart';
 import 'package:easy_os_mobile/domain/secure_storage/secure_storage_service.dart';
@@ -12,57 +13,55 @@ class CustomerApi {
 
   Future<CustomerModel?> postUser(CustomerRequest customer) async {
     final url = Uri.parse('$apiPath/customers/');
-    final token = await _secureStorage.getToken();
-    logger.i('Token usado na requisição: $token');
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    };
     final body = jsonEncode(customer.toJson());
 
-    try {
-      final response = await http.post(url, headers: headers, body: body);
+    final response = await _authenticatedRequestWithRetry(
+      (token) => http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: body,
+      ),
+    );
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final jsonResponse = jsonDecode(response.body);
-        final baseStruct = CustomerModel.fromJson(jsonResponse);
-        logger.i('Usuário criado com sucesso: ${response.body}');
-        return baseStruct;
-      } else {
-        logger.e('Erro no POST: ${response.statusCode} - ${response.body}');
-        return null;
-      }
-    } catch (e, stackTrace) {
-      logger.e('Erro na requisição POST', error: e, stackTrace: stackTrace);
+    if (response == null) return null;
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final jsonResponse = jsonDecode(response.body);
+      final baseStruct = CustomerModel.fromJson(jsonResponse);
+      logger.i('Usuário criado com sucesso: ${response.body}');
+      return baseStruct;
+    } else {
+      logger.e('Erro no POST: ${response.statusCode} - ${response.body}');
       return null;
     }
   }
 
   Future<List<CustomerModel>?> getAllCustomers() async {
     final url = Uri.parse('$apiPath/customers');
-    final token = await _secureStorage.getToken();
-    logger.i('Token usado na requisição: $token');
 
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    };
+    final response = await _authenticatedRequestWithRetry(
+      (token) => http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      ),
+    );
 
-    try {
-      final response = await http.get(url, headers: headers);
+    if (response == null) return null;
 
-      if (response.statusCode == 200) {
-        final jsonResponse = jsonDecode(response.body) as List;
-        final customers =
-            jsonResponse.map((item) => CustomerModel.fromJson(item)).toList();
-        logger.i('Clientes recuperados: ${customers.length}');
-        return customers;
-      } else {
-        logger.e('Erro no GET: ${response.statusCode} - ${response.body}');
-        return null;
-      }
-    } catch (e, stackTrace) {
-      logger.e('Erro na requisição GET', error: e, stackTrace: stackTrace);
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body) as List;
+      final customers =
+          jsonResponse.map((item) => CustomerModel.fromJson(item)).toList();
+      logger.i('Clientes recuperados: ${customers.length}');
+      return customers;
+    } else {
+      logger.e('Erro no GET: ${response.statusCode} - ${response.body}');
       return null;
     }
   }
@@ -72,54 +71,68 @@ class CustomerApi {
     Map<String, dynamic> updates,
   ) async {
     final url = Uri.parse('$apiPath/customers/$id/');
-    final token = await _secureStorage.getToken();
-    logger.i('Token usado na requisição PATCH: $token');
-
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    };
-
     final body = jsonEncode(updates);
 
-    try {
-      final response = await http.patch(url, headers: headers, body: body);
+    final response = await _authenticatedRequestWithRetry(
+      (token) => http.patch(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: body,
+      ),
+    );
 
-      if (response.statusCode == 200) {
-        final jsonResponse = jsonDecode(response.body);
-        final updatedCustomer = CustomerModel.fromJson(jsonResponse);
-        logger.i('Cliente atualizado: ${response.body}');
-        return updatedCustomer;
-      } else {
-        logger.e('Erro no PATCH: ${response.statusCode} - ${response.body}');
-        return null;
-      }
-    } catch (e, stackTrace) {
-      logger.e('Erro na requisição PATCH', error: e, stackTrace: stackTrace);
+    if (response == null) return null;
+
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body);
+      final updatedCustomer = CustomerModel.fromJson(jsonResponse);
+      logger.i('Cliente atualizado: ${response.body}');
+      return updatedCustomer;
+    } else {
+      logger.e('Erro no PATCH: ${response.statusCode} - ${response.body}');
       return null;
     }
   }
 
   Future<bool> deleteCustomer(int id) async {
     final url = Uri.parse('$apiPath/customers/$id/');
-    final token = await _secureStorage.getToken();
-    logger.i('Token usado na requisição DELETE: $token');
 
-    final headers = {'Authorization': 'Bearer $token'};
+    final response = await _authenticatedRequestWithRetry(
+      (token) => http.delete(url, headers: {'Authorization': 'Bearer $token'}),
+    );
 
-    try {
-      final response = await http.delete(url, headers: headers);
+    if (response == null) return false;
 
-      if (response.statusCode == 204) {
-        logger.i('Cliente deletado com sucesso.');
-        return true;
-      } else {
-        logger.e('Erro no DELETE: ${response.statusCode} - ${response.body}');
-        return false;
-      }
-    } catch (e, stackTrace) {
-      logger.e('Erro na requisição DELETE', error: e, stackTrace: stackTrace);
+    if (response.statusCode == 204) {
+      logger.i('Cliente deletado com sucesso.');
+      return true;
+    } else {
+      logger.e('Erro no DELETE: ${response.statusCode} - ${response.body}');
       return false;
     }
+  }
+
+  Future<http.Response?> _authenticatedRequestWithRetry(
+    Future<http.Response> Function(String token) request,
+  ) async {
+    String? token = await _secureStorage.getToken();
+    if (token == null) return null;
+
+    http.Response response = await request(token);
+    if (response.statusCode == 401) {
+      final refreshToken = await _secureStorage.getRefreshToken();
+      if (refreshToken != null) {
+        final newToken = await JwtRequest().refreshAccessToken(refreshToken);
+        if (newToken != null) {
+          logger.i('Retrying request with new token');
+          return await request(newToken);
+        }
+      }
+      return null;
+    }
+    return response;
   }
 }
