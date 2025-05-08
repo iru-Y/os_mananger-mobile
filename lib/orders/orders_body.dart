@@ -1,37 +1,27 @@
 import 'package:easy_os_mobile/colors/custom_colors.dart';
 import 'package:easy_os_mobile/orders/show_orders.dart';
+import 'package:easy_os_mobile/widgets/custom_modal_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_os_mobile/orders/create_order.dart';
 
 class OrdersBody extends StatelessWidget {
   const OrdersBody({super.key});
 
-  void _showCreateOrderModal(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isDismissible: true,
-      enableDrag: true,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      barrierColor: Colors.black54,
-      builder: (BuildContext context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).size.height * 0.2,
-            left: 16.0,
-            right: 16.0,
-          ),
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: GestureDetector(onTap: () {}, child: const CreateOrder()),
-          ),
-        );
-      },
-    );
-  }
+ void _showCreateOrderModal(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    isDismissible: true,
+    enableDrag: true,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    barrierColor: Colors.black54,
+    builder: (BuildContext context) {
+      return CustomModalBottomSheet(
+        child: const CreateOrder(), 
+      );
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {

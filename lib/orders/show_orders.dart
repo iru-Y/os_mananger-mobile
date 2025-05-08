@@ -1,4 +1,5 @@
 import 'package:easy_os_mobile/orders/edit_order.dart';
+import 'package:easy_os_mobile/widgets/custom_modal_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_os_mobile/colors/custom_colors.dart';
 import 'package:easy_os_mobile/domain/api/customer_api.dart';
@@ -36,23 +37,13 @@ class _ShowOrdersState extends State<ShowOrders> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       barrierColor: Colors.black54,
-      builder:
-          (_) => Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).size.height *0.2,
-            ),
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                Navigator.of(context).pop();
-              },
-              child: GestureDetector(
-                onTap: () {},
-                child: EditOrder(customer: customer),
-              ),
-            ),
-          ),
-    ).whenComplete(_fetchCustomers);
+      builder: (_) {
+        return CustomModalBottomSheet(
+          onDismiss: _fetchCustomers,
+          child: EditOrder(customer: customer),
+        );
+      },
+    );
   }
 
   @override
