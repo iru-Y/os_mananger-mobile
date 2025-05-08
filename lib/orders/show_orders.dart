@@ -1,8 +1,9 @@
+import 'package:easy_os_mobile/orders/edit_order.dart';
+import 'package:flutter/material.dart';
 import 'package:easy_os_mobile/colors/custom_colors.dart';
 import 'package:easy_os_mobile/domain/api/customer_api.dart';
 import 'package:easy_os_mobile/domain/model/customer_model.dart';
 import 'package:easy_os_mobile/widgets/custom_alert_dialog.dart';
-import 'package:flutter/material.dart';
 
 class ShowOrders extends StatefulWidget {
   const ShowOrders({super.key});
@@ -12,37 +13,63 @@ class ShowOrders extends StatefulWidget {
 }
 
 class _ShowOrdersState extends State<ShowOrders> {
-  final CustomerApi customersApi = CustomerApi();
-  late Future<List<CustomerModel>?> futureGetAllCustomers;
+  final CustomerApi _customerApi = CustomerApi();
+  late Future<List<CustomerModel>?> _futureCustomers;
 
   @override
   void initState() {
     super.initState();
-    futureGetAllCustomers = customersApi.getAllCustomers();
+    _fetchCustomers();
+  }
+
+  void _fetchCustomers() {
+    setState(() {
+      _futureCustomers = _customerApi.getAllCustomers();
+    });
+  }
+
+  void _showEditModal(CustomerModel customer) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+          left: 16,
+          right: 16,
+          top: 32,
+        ),
+        child: EditOrder(customer: customer),
+      ),
+    ).whenComplete(_fetchCustomers);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder<List<CustomerModel>?>(
-        future: futureGetAllCustomers,
+        future: _futureCustomers,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return const Center(child: Text('Erro ao carregar clientes'));
-          } else if (!snapshot.hasData || snapshot.data == null) {
+          } 
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                'Erro ao carregar clientes:\n${snapshot.error}',
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.red),
+              ),
+            );
+          } 
+          final customers = snapshot.data;
+          if (customers == null || customers.isEmpty) {
             return const Center(child: Text('Nenhum cliente encontrado'));
           }
 
-          final customers = snapshot.data!;
-
           return RefreshIndicator(
-            onRefresh: () async {
-              setState(() {
-                futureGetAllCustomers = customersApi.getAllCustomers();
-              });
-            },
+            onRefresh: () async => _fetchCustomers(),
             child: ListView.builder(
               itemCount: customers.length,
               itemBuilder: (context, index) {
@@ -67,23 +94,23 @@ class _ShowOrdersState extends State<ShowOrders> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Nome: ${customer.fullName!}",
+                                "Nome: ${customer.fullName}",
                                 style: const TextStyle(fontSize: 20),
                               ),
                               Text(
-                                "Telefone: ${customer.phone!}",
+                                "Telefone: ${customer.phone}",
                                 style: const TextStyle(fontSize: 20),
                               ),
                               Text(
-                                "Email: ${customer.email!}",
+                                "Email: ${customer.email}",
                                 style: const TextStyle(fontSize: 20),
                               ),
                               Text(
-                                "Problema encontrado: ${customer.description!}",
+                                "Problema encontrado: ${customer.description}",
                                 style: const TextStyle(fontSize: 20),
                               ),
                               Text(
-                                "Preço: R\$ ${customer.price!}",
+                                "Preço: R\$ ${customer.price}",
                                 style: const TextStyle(fontSize: 20),
                               ),
                             ],
@@ -91,7 +118,7 @@ class _ShowOrdersState extends State<ShowOrders> {
                         ),
                         IconButton(
                           icon: const Icon(Icons.edit),
-                          onPressed: () {},
+                          onPressed: () => _showEditModal(customer),
                         ),
                         IconButton(
                           icon: const Icon(Icons.delete, color: Colors.red),
@@ -103,28 +130,16 @@ class _ShowOrdersState extends State<ShowOrders> {
                               confirmText: 'Excluir',
                               cancelText: 'Cancelar',
                             );
-
                             if (confirm == true) {
-                              final deleted = await customersApi.deleteCustomer(
-                                customer.id!,
-                              );
+                              final deleted = await _customerApi.deleteCustomer(customer.id!);
                               if (deleted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      'Cliente excluído com sucesso',
-                                    ),
-                                  ),
+                                  const SnackBar(content: Text('Cliente excluído com sucesso')),
                                 );
-                                setState(() {
-                                  futureGetAllCustomers =
-                                      customersApi.getAllCustomers();
-                                });
+                                _fetchCustomers();
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Erro ao excluir cliente'),
-                                  ),
+                                  const SnackBar(content: Text('Erro ao excluir cliente')),
                                 );
                               }
                             }
