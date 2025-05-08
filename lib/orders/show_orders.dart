@@ -31,17 +31,27 @@ class _ShowOrdersState extends State<ShowOrders> {
   void _showEditModal(CustomerModel customer) {
     showModalBottomSheet(
       context: context,
+      isDismissible: true,
+      enableDrag: true,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom + 16,
-          left: 16,
-          right: 16,
-          top: 32,
-        ),
-        child: EditOrder(customer: customer),
-      ),
+      barrierColor: Colors.black54,
+      builder:
+          (_) => Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).size.height *0.2,
+            ),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+              child: GestureDetector(
+                onTap: () {},
+                child: EditOrder(customer: customer),
+              ),
+            ),
+          ),
     ).whenComplete(_fetchCustomers);
   }
 
@@ -53,7 +63,7 @@ class _ShowOrdersState extends State<ShowOrders> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
-          } 
+          }
           if (snapshot.hasError) {
             return Center(
               child: Text(
@@ -62,7 +72,7 @@ class _ShowOrdersState extends State<ShowOrders> {
                 style: const TextStyle(color: Colors.red),
               ),
             );
-          } 
+          }
           final customers = snapshot.data;
           if (customers == null || customers.isEmpty) {
             return const Center(child: Text('Nenhum cliente encontrado'));
@@ -131,15 +141,23 @@ class _ShowOrdersState extends State<ShowOrders> {
                               cancelText: 'Cancelar',
                             );
                             if (confirm == true) {
-                              final deleted = await _customerApi.deleteCustomer(customer.id!);
+                              final deleted = await _customerApi.deleteCustomer(
+                                customer.id!,
+                              );
                               if (deleted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Cliente excluído com sucesso')),
+                                  const SnackBar(
+                                    content: Text(
+                                      'Cliente excluído com sucesso',
+                                    ),
+                                  ),
                                 );
                                 _fetchCustomers();
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Erro ao excluir cliente')),
+                                  const SnackBar(
+                                    content: Text('Erro ao excluir cliente'),
+                                  ),
                                 );
                               }
                             }

@@ -23,7 +23,7 @@ class _EditOrderState extends State<EditOrder> {
 
   final CustomerApi _customerApi = CustomerApi();
   Future<bool>? _futureUpdate;
-  
+
   @override
   void initState() {
     super.initState();
@@ -43,7 +43,8 @@ class _EditOrderState extends State<EditOrder> {
       "price": _priceController.text.trim(),
     };
 
-    return await _customerApi.patchCustomer(widget.customer.id!, updates) != null;
+    return await _customerApi.patchCustomer(widget.customer.id!, updates) !=
+        null;
   }
 
   @override
@@ -65,8 +66,7 @@ class _EditOrderState extends State<EditOrder> {
           return const SizedBox.shrink();
         }
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        return SingleChildScrollView(
           child: FormWrapper(
             child: Column(
               mainAxisSize: MainAxisSize.min,

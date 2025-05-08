@@ -9,22 +9,24 @@ class OrdersBody extends StatelessWidget {
   void _showCreateOrderModal(BuildContext context) {
     showModalBottomSheet(
       context: context,
+      isDismissible: true,
+      enableDrag: true,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
+      barrierColor: Colors.black54,
       builder: (BuildContext context) {
         return Padding(
           padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).size.height * 0.1,
+            bottom: MediaQuery.of(context).size.height * 0.2,
             left: 16.0,
             right: 16.0,
           ),
-          child: Center(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [const CreateOrder()],
-              ),
-            ),
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              Navigator.of(context).pop();
+            },
+            child: GestureDetector(onTap: () {}, child: const CreateOrder()),
           ),
         );
       },
