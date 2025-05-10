@@ -7,7 +7,7 @@ class CustomModalBottomSheet extends StatelessWidget {
 
   const CustomModalBottomSheet({
     super.key,
-    required this.child, 
+    required this.child,
     this.isDismissible = true,
     this.onDismiss,
   });
@@ -16,7 +16,6 @@ class CustomModalBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-       
         if (isDismissible) {
           Navigator.of(context).pop();
         }
@@ -27,10 +26,7 @@ class CustomModalBottomSheet extends StatelessWidget {
           onTap: () {},
           child: Container(
             padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom + 16,
-              left: 16,
-              right: 16,
-              top: 32,
+              bottom: MediaQuery.of(context).size.height * 0.2,
             ),
             child: child,
           ),
