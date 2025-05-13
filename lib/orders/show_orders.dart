@@ -1,10 +1,12 @@
+// lib/orders/show_orders.dart
+
 import 'package:easy_os_mobile/domain/schema/customer_response.dart';
 import 'package:easy_os_mobile/orders/edit_order.dart';
 import 'package:easy_os_mobile/widgets/custom_modal_bottom_sheet.dart';
+import 'package:easy_os_mobile/widgets/custom_alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_os_mobile/colors/custom_colors.dart';
 import 'package:easy_os_mobile/domain/api/customer_api.dart';
-import 'package:easy_os_mobile/widgets/custom_alert_dialog.dart';
 
 class ShowOrders extends StatefulWidget {
   const ShowOrders({super.key});
@@ -29,19 +31,25 @@ class _ShowOrdersState extends State<ShowOrders> {
     });
   }
 
+  Future<void> _showError(String msg) {
+    return CustomAlertDialog.show(
+      context,
+      title: 'Erro',
+      content: msg,
+      confirmText: 'OK',
+      cancelText: '',
+    );
+  }
+
   void _showEditModal(CustomerResponse resp) async {
     if (resp.id == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Cliente sem ID, impossível editar')),
-      );
+      await _showError('Cliente sem ID, impossível editar');
       return;
     }
 
     final model = await _customerApi.getCustomerById(resp.id!);
     if (model == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Erro ao carregar dados para edição')),
-      );
+      await _showError('Erro ao carregar dados para edição');
       return;
     }
 
@@ -151,20 +159,16 @@ class _ShowOrdersState extends State<ShowOrders> {
                                 customer.id!,
                               );
                               if (deleted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      'Cliente excluído com sucesso',
-                                    ),
-                                  ),
+                                await CustomAlertDialog.show(
+                                  context,
+                                  title: 'Sucesso',
+                                  content: 'Cliente excluído com sucesso',
+                                  confirmText: 'OK',
+                                  cancelText: '',
                                 );
                                 _fetchCustomers();
                               } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Erro ao excluir cliente'),
-                                  ),
-                                );
+                                await _showError('Erro ao excluir cliente');
                               }
                             }
                           },

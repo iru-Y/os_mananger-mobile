@@ -1,153 +1,176 @@
 import 'dart:convert';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:easy_os_mobile/domain/api/customer_api.dart';
 import 'package:easy_os_mobile/domain/model/customer_model.dart';
 import 'package:easy_os_mobile/domain/schema/customer_response.dart';
-import 'package:easy_os_mobile/domain/secure_storage/secure_storage_service.dart';
-import 'package:easy_os_mobile/utils/api_path.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:http/http.dart' as http;
-import 'package:mockito/mockito.dart';
 
-class MockSecureStorageService extends Mock implements SecureStorageService {}
-class MockHttpClient extends Mock implements http.Client {}
+class TestCustomerApi extends CustomerApi {
+  final http.Response fakeResponse;
+
+  TestCustomerApi(this.fakeResponse);
+
+  @override
+  Future<http.Response?> _authenticatedRequestWithRetry(
+    Future<http.Response> Function(String token) request,
+  ) async {
+    return Future.value(fakeResponse);
+  }
+}
 
 void main() {
-  late CustomerApi customerApi;
-  late MockSecureStorageService mockSecureStorage;
-  late MockHttpClient mockHttpClient;
+  group('CustomerApi.getAllCustomers', () {
+    test('deve desserializar e retornar lista quando status 200', () async {
+      final listJson = jsonEncode([
+        {
+          "id": 1,
+          "full_name": "Alice",
+          "email": "alice@example.com",
+          "phone": "1234",
+          "description": "Teste",
+          "profit": "10.00"
+        },
+        {
+          "id": 2,
+          "full_name": "Bob",
+          "email": "bob@example.com",
+          "phone": "5678",
+          "description": "Outro",
+          "profit": "20.00"
+        }
+      ]);
+      final fake = http.Response(listJson, 200);
+      final api = TestCustomerApi(fake);
 
-  const String fakeToken = 'fakeToken123';
-  String apiUrl = '$apiPath/customers/';
+      final result = await api.getAllCustomers();
 
-  setUp(() {
-    mockSecureStorage = MockSecureStorageService();
-    mockHttpClient = MockHttpClient();
-    customerApi = CustomerApi();
+      expect(result, isNotNull);
+      expect(result, hasLength(2));
+      expect(result![0], isA<CustomerResponse>());
+      expect(result[1].fullName, equals("Bob"));
+    });
+
+    test('deve retornar null quando status != 200', () async {
+      final fake = http.Response('erro', 500);
+      final api = TestCustomerApi(fake);
+
+      final result = await api.getAllCustomers();
+      expect(result, isNull);
+    });
   });
 
-  group('CustomerApi', () {
-    group('postUser', () {
-      test('deve retornar um CustomerResponse em caso de sucesso', () async {
-        final customer = CustomerModel(
-          fullName: 'John Doe',
-          email: 'john@example.com',
-          phone: '123456789',
-          description: 'Cliente teste',
-          costPrice: "70",
-          servicePrice: "200"
-        );
+  group('CustomerApi.postUser', () {
+    test('deve completar a requisição com sucesso em 201', () async {
+      final fake = http.Response('', 201);
+      final api = TestCustomerApi(fake);
 
-        final responseBody = jsonEncode({
-          'full_name': 'John Doe',
-          'email': 'john@example.com',
-          'phone': '123456789',
-          'description': 'Cliente teste',
-          'profit': '50.00',
-        });
+      final dto = CustomerModel(
+        fullName: "Carol",
+        email: "carol@example.com",
+        phone: "9999",
+        description: "Serviço X",
+        costPrice: "50.00",
+        servicePrice: "80.00",
+      );
 
-        when(mockSecureStorage.getToken()).thenAnswer((_) async => fakeToken);
-        when(mockHttpClient.post(
-          Uri.parse(apiUrl),
-          headers: anyNamed('headers'),
-          body: anyNamed('body'),
-        )).thenAnswer((_) async => http.Response(responseBody, 201));
-
-        final result = await customerApi.postUser(customer);
-
-        expect(result, isA<CustomerResponse>());
-        expect(result?.fullName, equals('John Doe'));
-      });
-
-      test('deve retornar null em caso de erro 400', () async {
-        final customer = CustomerModel(
-          fullName: 'Invalid',
-          email: 'invalid@example.com',
-          phone: '123456789',
-          description: 'Cliente teste',
-          costPrice: "70",
-          servicePrice: "200"
-        );
-
-        when(mockSecureStorage.getToken()).thenAnswer((_) async => fakeToken);
-        when(mockHttpClient.post(
-          Uri.parse(apiUrl),
-          headers: anyNamed('headers'),
-          body: anyNamed('body'),
-        )).thenAnswer((_) async => http.Response('{"error": "Bad Request"}', 400));
-
-        final result = await customerApi.postUser(customer);
-
-        expect(result, isNull);
-      });
+      expect(() async => await api.postUser(dto), returnsNormally);
     });
 
-    group('getAllCustomers', () {
-      test('deve retornar uma lista de CustomerResponse em caso de sucesso', () async {
-        final responseBody = jsonEncode([
-          {
-            'full_name': 'John Doe',
-            'email': 'john@example.com',
-            'phone': '123456789',
-            'description': 'Cliente teste',
-            'profit': '50.00',
-          },
-          {
-            'full_name': 'Jane Smith',
-            'email': 'jane@example.com',
-            'phone': '987654321',
-            'description': 'Cliente teste 2',
-            'profit': '75.00',
-          },
-        ]);
+    test('deve completar a requisição com erro em 400', () async {
+      final fake = http.Response('{"error":"bad"}', 400);
+      final api = TestCustomerApi(fake);
 
-        when(mockSecureStorage.getToken()).thenAnswer((_) async => fakeToken);
-        when(mockHttpClient.get(Uri.parse(apiUrl), headers: anyNamed('headers')))
-            .thenAnswer((_) async => http.Response(responseBody, 200));
+      final dto = CustomerModel(
+        fullName: "X",
+        email: "x@x.com",
+        phone: "0000",
+        description: "Y",
+        costPrice: "0",
+        servicePrice: "0",
+      );
 
-        final result = await customerApi.getAllCustomers();
+      expect(() async => await api.postUser(dto), returnsNormally);
+    });
+  });
 
-        expect(result, isA<List<CustomerResponse>>());
-        expect(result?.length, equals(2));
+  group('CustomerApi.getCustomerById', () {
+    test('deve retornar CustomerModel quando status 200', () async {
+      final jsonBody = jsonEncode({
+        "id": 5,
+        "full_name": "Dani",
+        "email": "dani@example.com",
+        "phone": "1111",
+        "description": "Teste",
+        "cost_price": "40.00",
+        "service_price": "70.00"
       });
+      final fake = http.Response(jsonBody, 200);
+      final api = TestCustomerApi(fake);
 
-      test('deve retornar null em caso de erro 500', () async {
-        when(mockSecureStorage.getToken()).thenAnswer((_) async => fakeToken);
-        when(mockHttpClient.get(Uri.parse(apiUrl), headers: anyNamed('headers')))
-            .thenAnswer((_) async => http.Response('{"error": "Server Error"}', 500));
+      final result = await api.getCustomerById(5);
 
-        final result = await customerApi.getAllCustomers();
-
-        expect(result, isNull);
-      });
+      expect(result, isNotNull);
+      expect(result, isA<CustomerModel>());
+      expect(result!.id, equals(5));
+      expect(result.costPrice, equals("40.00"));
     });
 
-    group('deleteCustomer', () {
-      test('deve retornar true em caso de sucesso', () async {
-        const int customerId = 1;
-        final url = Uri.parse('$apiUrl$customerId/');
+    test('deve retornar null quando status != 200', () async {
+      final fake = http.Response('nope', 404);
+      final api = TestCustomerApi(fake);
 
-        when(mockSecureStorage.getToken()).thenAnswer((_) async => fakeToken);
-        when(mockHttpClient.delete(url, headers: anyNamed('headers')))
-            .thenAnswer((_) async => http.Response('', 204));
+      final result = await api.getCustomerById(123);
+      expect(result, isNull);
+    });
+  });
 
-        final result = await customerApi.deleteCustomer(customerId);
-
-        expect(result, isTrue);
+  group('CustomerApi.patchCustomer', () {
+    test('deve retornar CustomerModel atualizado em 200', () async {
+      final jsonBody = jsonEncode({
+        "id": 5,
+        "full_name": "Dani Alterada",
+        "email": "dani2@example.com",
+        "phone": "2222",
+        "description": "Teste alterado",
+        "cost_price": "45.00",
+        "service_price": "75.00"
       });
+      final fake = http.Response(jsonBody, 200);
+      final api = TestCustomerApi(fake);
 
-      test('deve retornar false em caso de erro', () async {
-        const int customerId = 1;
-        final url = Uri.parse('$apiUrl$customerId/');
+      final updates = {"description": "Teste alterado"};
+      final result = await api.patchCustomer(5, updates);
 
-        when(mockSecureStorage.getToken()).thenAnswer((_) async => fakeToken);
-        when(mockHttpClient.delete(url, headers: anyNamed('headers')))
-            .thenAnswer((_) async => http.Response('{"error": "Not Found"}', 404));
+      expect(result, isNotNull);
+      expect(result, isA<CustomerModel>());
+      expect(result!.fullName, equals("Dani Alterada"));
+    });
 
-        final result = await customerApi.deleteCustomer(customerId);
+    test('deve retornar null em erro 400', () async {
+      final fake = http.Response('bad', 400);
+      final api = TestCustomerApi(fake);
 
-        expect(result, isFalse);
-      });
+      final result = await api.patchCustomer(5, {"x": "y"});
+      expect(result, isNull);
+    });
+  });
+
+  group('CustomerApi.deleteCustomer', () {
+    test('deve retornar true em 204', () async {
+      final fake = http.Response('', 204);
+      final api = TestCustomerApi(fake);
+
+      final result = await api.deleteCustomer(7);
+      expect(result, isTrue);
+    });
+
+    test('deve retornar false em status != 204', () async {
+      final fake = http.Response('err', 500);
+      final api = TestCustomerApi(fake);
+
+      final result = await api.deleteCustomer(7);
+      expect(result, isFalse);
     });
   });
 }

@@ -1,3 +1,5 @@
+// lib/widgets/custom_alert_dialog.dart
+
 import 'package:flutter/material.dart';
 import 'package:easy_os_mobile/colors/custom_colors.dart';
 
@@ -24,12 +26,13 @@ class CustomAlertDialog extends StatelessWidget {
   }) {
     return showDialog<bool>(
       context: context,
-      builder: (context) => CustomAlertDialog(
-        title: title,
-        content: content,
-        confirmText: confirmText,
-        cancelText: cancelText,
-      ),
+      builder:
+          (context) => CustomAlertDialog(
+            title: title,
+            content: content,
+            confirmText: confirmText,
+            cancelText: cancelText,
+          ),
     );
   }
 
@@ -48,20 +51,15 @@ class CustomAlertDialog extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
       ),
-      content: Text(
-        content,
-        style: const TextStyle(
-          color: Colors.white70,
-        ),
-      ),
+      content: Text(content, style: const TextStyle(color: Colors.white70)),
       actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context, false),
-          style: TextButton.styleFrom(
-            foregroundColor: CustomColors.btnColor,
+        // só exibe o cancelar se cancelText não for vazio
+        if (cancelText.isNotEmpty)
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            style: TextButton.styleFrom(foregroundColor: CustomColors.btnColor),
+            child: Text(cancelText),
           ),
-          child: Text(cancelText),
-        ),
         TextButton(
           onPressed: () => Navigator.pop(context, true),
           style: TextButton.styleFrom(

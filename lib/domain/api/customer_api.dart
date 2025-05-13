@@ -34,7 +34,7 @@ class CustomerApi {
     }
   }
 
-  Future<Void?> postUser(CustomerModel customer) async {
+  Future<void> postUser(CustomerModel customer) async {
     final url = Uri.parse('$apiPath/customers/');
     final body = jsonEncode(customer.toJson());
 
@@ -55,9 +55,7 @@ class CustomerApi {
       logger.i('Usuário criado com sucesso: ${response.body}');
     } else {
       logger.e('Erro no POST: ${response.statusCode} - ${response.body}');
-      return null;
     }
-    return null;
   }
 
   Future<List<CustomerResponse>?> getAllCustomers() async {
