@@ -10,7 +10,10 @@ class CustomerModel {
   String? fullName;
   String? phone;
   String? description;
-  String? price;
+  @JsonKey(name: 'cost_price')
+  String? costPrice;
+  @JsonKey(name: 'service_price')
+  String? servicePrice;
 
   CustomerModel({
     this.id,
@@ -18,7 +21,8 @@ class CustomerModel {
     this.fullName,
     this.phone,
     this.description,
-    this.price,
+    this.costPrice,
+    this.servicePrice,
   });
 
   factory CustomerModel.fromJson(Map<String, dynamic> json) =>

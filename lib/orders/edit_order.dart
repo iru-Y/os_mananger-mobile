@@ -31,7 +31,8 @@ class _EditOrderState extends State<EditOrder> {
     _phoneController.text = widget.customer.phone ?? '';
     _emailController.text = widget.customer.email ?? '';
     _descriptionController.text = widget.customer.description ?? '';
-    _priceController.text = widget.customer.price ?? '';
+    _priceController.text = widget.customer.costPrice ?? '';
+    _priceController.text = widget.customer.servicePrice ?? '';
   }
 
   Future<bool> _updateOrder() async {

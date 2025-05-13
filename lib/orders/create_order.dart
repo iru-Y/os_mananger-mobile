@@ -1,11 +1,11 @@
 import 'dart:async';
 
+import 'package:easy_os_mobile/domain/model/customer_model.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_os_mobile/widgets/input_field.dart';
 import 'package:easy_os_mobile/widgets/custom_button.dart';
 import 'package:easy_os_mobile/widgets/form_wrapper.dart';
 import 'package:easy_os_mobile/domain/api/customer_api.dart';
-import 'package:easy_os_mobile/domain/schema/customer_request.dart';
 import 'package:easy_os_mobile/routes/app_routes.dart';
 
 class CreateOrder extends StatefulWidget {
@@ -20,25 +20,25 @@ class _CreateOrderState extends State<CreateOrder> {
   final _phoneController = TextEditingController();
   final _emailController = TextEditingController();
   final _descriptionController = TextEditingController();
-  final _priceController = TextEditingController();
+  final _costPriceController = TextEditingController();
+  final _servicePriceController = TextEditingController();
 
   final _customerApi = CustomerApi();
 
   Future<bool>? _futureSubmit;
 
   Future<bool> _submitOrder() async {
-    final req = CustomerRequest(
+    final customerModel = CustomerModel(
       fullName: _nameController.text.trim(),
       phone: _phoneController.text.trim(),
       email: _emailController.text.trim(),
       description: _descriptionController.text.trim(),
-      price: _priceController.text.trim(),
+      costPrice: _costPriceController.text.trim(),
+      servicePrice: _servicePriceController.text.trim(),
     );
 
-    final created = await _customerApi.postUser(req);
-    if (created == null) {
-      throw Exception('Falha ao criar ordem');
-    }
+    await _customerApi.postUser(customerModel);
+
     return true;
   }
 
@@ -115,8 +115,12 @@ class _CreateOrderState extends State<CreateOrder> {
               textEditingController: _descriptionController,
             ),
             InputField(
+              labelTxt: 'Custo do serviço',
+              textEditingController: _costPriceController,
+            ),
+            InputField(
               labelTxt: 'Preço do serviço',
-              textEditingController: _priceController,
+              textEditingController: _servicePriceController,
             ),
             const SizedBox(height: 20),
             CustomButton(txtBtn: 'Criar', onTap: _onTapSubmit),

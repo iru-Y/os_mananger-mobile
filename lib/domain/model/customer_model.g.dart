@@ -13,7 +13,8 @@ CustomerModel _$CustomerModelFromJson(Map<String, dynamic> json) =>
       fullName: json['full_name'] as String?,
       phone: json['phone'] as String?,
       description: json['description'] as String?,
-      price:  json['price'] as String?,
+      costPrice: json['cost_price'] as String?,
+      servicePrice: json['service_price'] as String?,
     );
 
 Map<String, dynamic> _$CustomerModelToJson(CustomerModel instance) =>
@@ -23,5 +24,6 @@ Map<String, dynamic> _$CustomerModelToJson(CustomerModel instance) =>
       'full_name': instance.fullName,
       'phone': instance.phone,
       'description': instance.description,
-      'price': instance.price,
+      'cost_price': instance.costPrice,
+      'service_price': instance.servicePrice,
     };

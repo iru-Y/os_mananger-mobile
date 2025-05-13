@@ -1,5 +1,6 @@
 import 'package:easy_os_mobile/colors/custom_colors.dart';
 import 'package:easy_os_mobile/orders/show_orders.dart';
+import 'package:easy_os_mobile/routes/app_routes.dart';
 import 'package:easy_os_mobile/widgets/custom_modal_bottom_sheet.dart';
 import 'package:easy_os_mobile/domain/secure_storage/secure_storage_service.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,7 @@ class OrdersBody extends StatelessWidget {
 
   Future<void> _logout(BuildContext context) async {
     await SecureStorageService().deleteAllTokens();
-    Navigator.of(context).pushReplacementNamed('/');
+    Navigator.of(context).pushReplacementNamed(AppRoutes.login);
   }
 
   @override

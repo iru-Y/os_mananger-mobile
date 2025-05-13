@@ -1,9 +1,9 @@
+import 'package:easy_os_mobile/domain/schema/customer_response.dart';
 import 'package:easy_os_mobile/orders/edit_order.dart';
 import 'package:easy_os_mobile/widgets/custom_modal_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_os_mobile/colors/custom_colors.dart';
 import 'package:easy_os_mobile/domain/api/customer_api.dart';
-import 'package:easy_os_mobile/domain/model/customer_model.dart';
 import 'package:easy_os_mobile/widgets/custom_alert_dialog.dart';
 
 class ShowOrders extends StatefulWidget {
@@ -15,7 +15,7 @@ class ShowOrders extends StatefulWidget {
 
 class _ShowOrdersState extends State<ShowOrders> {
   final CustomerApi _customerApi = CustomerApi();
-  late Future<List<CustomerModel>?> _futureCustomers;
+  late Future<List<CustomerResponse>?> _futureCustomers;
 
   @override
   void initState() {
@@ -29,7 +29,22 @@ class _ShowOrdersState extends State<ShowOrders> {
     });
   }
 
-  void _showEditModal(CustomerModel customer) {
+  void _showEditModal(CustomerResponse resp) async {
+    if (resp.id == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Cliente sem ID, impossível editar')),
+      );
+      return;
+    }
+
+    final model = await _customerApi.getCustomerById(resp.id!);
+    if (model == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Erro ao carregar dados para edição')),
+      );
+      return;
+    }
+
     showModalBottomSheet(
       context: context,
       isDismissible: true,
@@ -40,7 +55,7 @@ class _ShowOrdersState extends State<ShowOrders> {
       builder: (_) {
         return CustomModalBottomSheet(
           onDismiss: _fetchCustomers,
-          child: EditOrder(customer: customer),
+          child: EditOrder(customer: model),
         );
       },
     );
@@ -49,7 +64,7 @@ class _ShowOrdersState extends State<ShowOrders> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<List<CustomerModel>?>(
+      body: FutureBuilder<List<CustomerResponse>?>(
         future: _futureCustomers,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -111,7 +126,7 @@ class _ShowOrdersState extends State<ShowOrders> {
                                 style: const TextStyle(fontSize: 20),
                               ),
                               Text(
-                                "Preço: R\$ ${customer.price}",
+                                "Preço: R\$ ${customer.profit}",
                                 style: const TextStyle(fontSize: 20),
                               ),
                             ],
