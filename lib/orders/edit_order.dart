@@ -4,6 +4,8 @@ import 'package:easy_os_mobile/domain/model/customer_model.dart';
 import 'package:easy_os_mobile/widgets/form_wrapper.dart';
 import 'package:easy_os_mobile/widgets/input_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class EditOrder extends StatefulWidget {
   final CustomerModel customer;
@@ -24,6 +26,15 @@ class _EditOrderState extends State<EditOrder> {
   final CustomerApi _customerApi = CustomerApi();
   Future<bool>? _futureUpdate;
 
+  final _phoneMask = MaskTextInputFormatter(
+    mask: '(##) #####-####',
+    filter: {"#": RegExp(r'\d')},
+  );
+  final _priceMask = MaskTextInputFormatter(
+    mask: '#########.##',
+    filter: {"#": RegExp(r'\d')},
+  );
+
   @override
   void initState() {
     super.initState();
@@ -31,7 +42,6 @@ class _EditOrderState extends State<EditOrder> {
     _phoneController.text = widget.customer.phone ?? '';
     _emailController.text = widget.customer.email ?? '';
     _descriptionController.text = widget.customer.description ?? '';
-    _priceController.text = widget.customer.costPrice ?? '';
     _priceController.text = widget.customer.servicePrice ?? '';
   }
 
@@ -43,9 +53,11 @@ class _EditOrderState extends State<EditOrder> {
       "description": _descriptionController.text.trim(),
       "price": _priceController.text.trim(),
     };
-
-    return await _customerApi.patchCustomer(widget.customer.id!, updates) !=
-        null;
+    final patched = await _customerApi.patchCustomer(
+      widget.customer.id!,
+      updates,
+    );
+    return patched != null;
   }
 
   @override
@@ -55,15 +67,19 @@ class _EditOrderState extends State<EditOrder> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
+        }
+        if (snapshot.hasError) {
           return Center(
             child: Text(
               'Erro: ${snapshot.error}',
               style: const TextStyle(color: Colors.red),
             ),
           );
-        } else if (snapshot.hasData && snapshot.data == true) {
-          Navigator.of(context).pop();
+        }
+        if (snapshot.hasData && snapshot.data == true) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.of(context).pop();
+          });
           return const SizedBox.shrink();
         }
 
@@ -74,23 +90,32 @@ class _EditOrderState extends State<EditOrder> {
               children: [
                 InputField(
                   labelTxt: 'Nome Completo',
-                  textEditingController: _nameController,
+                  controller: _nameController,
                 ),
                 InputField(
                   labelTxt: 'Telefone',
-                  textEditingController: _phoneController,
+                  controller: _phoneController,
+                  keyboardType: TextInputType.phone,
+                  inputFormatters: [_phoneMask],
                 ),
                 InputField(
                   labelTxt: 'Email',
-                  textEditingController: _emailController,
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
                 ),
                 InputField(
                   labelTxt: 'Descrição',
-                  textEditingController: _descriptionController,
+                  controller: _descriptionController,
+                  maxLines: 3,
                 ),
                 InputField(
                   labelTxt: 'Preço',
-                  textEditingController: _priceController,
+                  controller: _priceController,
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[\d,\.]')),
+                    _priceMask,
+                  ],
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(

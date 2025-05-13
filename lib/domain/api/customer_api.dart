@@ -49,7 +49,7 @@ class CustomerApi {
       ),
     );
 
-    if (response == null) return null;
+    if (response == null) return;
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       logger.i('Usuário criado com sucesso: ${response.body}');

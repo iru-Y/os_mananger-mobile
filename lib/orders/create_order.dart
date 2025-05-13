@@ -1,5 +1,3 @@
-// lib/orders/create_order.dart
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -12,7 +10,7 @@ import 'package:easy_os_mobile/routes/app_routes.dart';
 import 'package:easy_os_mobile/widgets/form_wrapper.dart';
 import 'package:easy_os_mobile/widgets/custom_button.dart';
 import 'package:easy_os_mobile/widgets/custom_alert_dialog.dart';
-import 'package:easy_os_mobile/widgets/input_field.dart'; // opcional, se quiser manter
+import 'package:easy_os_mobile/widgets/input_field.dart';
 
 class CreateOrder extends StatefulWidget {
   const CreateOrder({super.key});
@@ -35,13 +33,12 @@ class _CreateOrderState extends State<CreateOrder> {
 
   Future<bool>? _futureSubmit;
 
-  // máscaras
   final _phoneMask = MaskTextInputFormatter(
     mask: '(##) #####-####',
     filter: {"#": RegExp(r'\d')},
   );
   final _priceMask = MaskTextInputFormatter(
-    mask: '#########.##', // até 9 dígitos e 2 decimais
+    mask: '#########.##',
     filter: {"#": RegExp(r'\d')},
   );
 
@@ -68,11 +65,13 @@ class _CreateOrderState extends State<CreateOrder> {
     ).then((_) {});
   }
 
+  bool _isNumeric(String s) {
+    return double.tryParse(s.replaceAll(',', '.')) != null;
+  }
+
   void _onTapSubmit() {
-    // evita múltiplos cliques
     if (_futureSubmit != null) return;
 
-    // validações
     if (_nameController.text.trim().isEmpty) {
       _showError('O nome é obrigatório');
       return;
@@ -89,7 +88,6 @@ class _CreateOrderState extends State<CreateOrder> {
       _showError('O email é obrigatório');
       return;
     }
-    // regex simples de e‑mail
     final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
     if (!emailRegex.hasMatch(_emailController.text.trim())) {
       _showError('Email inválido');
@@ -116,19 +114,13 @@ class _CreateOrderState extends State<CreateOrder> {
       return;
     }
 
-    // tudo válido → dispara o envio
     setState(() {
       _futureSubmit = _submitOrder();
     });
   }
 
-  bool _isNumeric(String s) {
-    return double.tryParse(s.replaceAll(',', '.')) != null;
-  }
-
   @override
   Widget build(BuildContext context) {
-    // enquanto estivermos enviando, mostramos indicador / erro / redirecionamento
     if (_futureSubmit != null) {
       return FutureBuilder<bool>(
         future: _futureSubmit,
@@ -159,7 +151,6 @@ class _CreateOrderState extends State<CreateOrder> {
               ),
             );
           } else {
-            // sucesso: vai pro listagem
             WidgetsBinding.instance.addPostFrameCallback((_) {
               Navigator.of(context).pushReplacementNamed(AppRoutes.ordersBody);
             });
@@ -169,7 +160,6 @@ class _CreateOrderState extends State<CreateOrder> {
       );
     }
 
-    // formulário normal
     return SingleChildScrollView(
       child: FormWrapper(
         child: Form(
@@ -178,27 +168,27 @@ class _CreateOrderState extends State<CreateOrder> {
             children: [
               InputField(
                 labelTxt: 'Nome Completo',
-                textEditingController: _nameController,
+                controller: _nameController,
               ),
               InputField(
                 labelTxt: 'Telefone',
-                textEditingController: _phoneController,
+                controller: _phoneController,
                 keyboardType: TextInputType.phone,
                 inputFormatters: [_phoneMask],
               ),
               InputField(
                 labelTxt: 'Email',
-                textEditingController: _emailController,
+                controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
               ),
               InputField(
                 labelTxt: 'Descrição do problema',
-                textEditingController: _descriptionController,
+                controller: _descriptionController,
                 maxLines: 3,
               ),
               InputField(
                 labelTxt: 'Custo do serviço',
-                textEditingController: _costPriceController,
+                controller: _costPriceController,
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'[\d,\.]')),
@@ -207,7 +197,7 @@ class _CreateOrderState extends State<CreateOrder> {
               ),
               InputField(
                 labelTxt: 'Preço do serviço',
-                textEditingController: _servicePriceController,
+                controller: _servicePriceController,
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'[\d,\.]')),

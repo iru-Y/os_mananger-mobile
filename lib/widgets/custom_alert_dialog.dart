@@ -1,5 +1,3 @@
-// lib/widgets/custom_alert_dialog.dart
-
 import 'package:flutter/material.dart';
 import 'package:easy_os_mobile/colors/custom_colors.dart';
 
@@ -53,7 +51,6 @@ class CustomAlertDialog extends StatelessWidget {
       ),
       content: Text(content, style: const TextStyle(color: Colors.white70)),
       actions: [
-        // só exibe o cancelar se cancelText não for vazio
         if (cancelText.isNotEmpty)
           TextButton(
             onPressed: () => Navigator.pop(context, false),

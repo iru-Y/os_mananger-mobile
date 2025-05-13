@@ -96,12 +96,12 @@ class _LoginState extends State<Login> {
                 children: [
                   InputField(
                     labelTxt: 'Técnico',
-                    textEditingController: userNameController,
+                    controller: userNameController,
                   ),
                   InputField(
                     obscureText: true,
                     labelTxt: 'Senha',
-                    textEditingController: passwordController,
+                    controller: passwordController,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
