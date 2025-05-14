@@ -1,5 +1,7 @@
 import 'package:easy_os_mobile/domain/api/customer_api.dart';
+import 'package:easy_os_mobile/domain/api/monthly_summary_api.dart';
 import 'package:easy_os_mobile/domain/schema/customer_response.dart';
+import 'package:easy_os_mobile/domain/schema/monthly_summary_response.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_os_mobile/widgets/form_wrapper.dart';
 
@@ -11,12 +13,12 @@ class StoreBalance extends StatefulWidget {
 }
 
 class _StoreBalanceState extends State<StoreBalance> {
-  CustomerApi customerApi = CustomerApi();
+  MonthlySummaryApi monthlySummaryApi = MonthlySummaryApi();
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<CustomerResponse>?>(
-      future: customerApi.getAllCustomers(),
+    return FutureBuilder<MonthlySummaryResponse?>(
+      future: monthlySummaryApi.getMonthlySummary(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Padding(
@@ -30,31 +32,20 @@ class _StoreBalanceState extends State<StoreBalance> {
           );
         } else if (snapshot.hasData) {
           final balance = snapshot.data!;
-          var balances = balance.map((e) => e.profit).toList();
-          return ListView.builder(
-            itemCount: balances.length,
-            itemBuilder: 
-                (context, index) => FormWrapper(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Saldo disponível:',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        'R\$ ${balances[index]}',
-                        style: const TextStyle(
-                          fontSize: 24,
-                          color: Colors.green,
-                        ),
-                      ),
-                    ],
-                  ),
+          return FormWrapper(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Saldo disponível:',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
+                Text(
+                  'R\$ ${balance}',
+                  style: const TextStyle(fontSize: 24, color: Colors.green),
+                ),
+              ],
+            ),
           );
         } else {
           return const Text('Nenhum dado disponível.');

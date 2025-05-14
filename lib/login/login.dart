@@ -26,6 +26,7 @@ class _LoginState extends State<Login> {
   final SecureStorageService storage = SecureStorageService();
 
   bool rememberMe = false;
+  Future<void>? loginFuture;
 
   @override
   void initState() {
@@ -43,7 +44,7 @@ class _LoginState extends State<Login> {
     }
   }
 
-  void login() async {
+  Future<void> doLogin() async {
     final username = userNameController.text.trim();
     final password = passwordController.text;
 
@@ -68,11 +69,19 @@ class _LoginState extends State<Login> {
       showDialog(
         context: context,
         builder:
-            (_) => CustomAlertDialog(title: 'Erro ao fazer login',
-             content: 'Verifique se o login e senha estão corretos',
-             isError: true,)
+            (_) => CustomAlertDialog(
+              title: 'Erro ao fazer login',
+              content: 'Verifique se o login e senha estão corretos',
+              isError: true,
+            ),
       );
     }
+  }
+
+  void login() {
+    setState(() {
+      loginFuture = doLogin();
+    });
   }
 
   @override
@@ -80,49 +89,62 @@ class _LoginState extends State<Login> {
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(height: 100),
-          CustomTitle(title: 'Bem-vindo'),
+          const SizedBox(height: 100),
+          const CustomTitle(title: 'Bem-vindo'),
           FormWrapper(
-            child: Form(
-              child: Column(
-                children: [
-                  InputField(
-                    labelTxt: 'Técnico',
-                    controller: userNameController,
-                  ),
-                  InputField(
-                    obscureText: true,
-                    labelTxt: 'Senha',
-                    controller: passwordController,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+            child: FutureBuilder<void>(
+              future: loginFuture,
+              builder: (context, snapshot) {
+                Widget actionWidget;
+
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  actionWidget = const CircularProgressIndicator();
+                } else {
+                  actionWidget = CustomButton(txtBtn: 'Entrar', onTap: login);
+                }
+
+                return Form(
+                  child: Column(
                     children: [
-                      Checkbox(
-                        activeColor: CustomColors.btnColor,
-                        value: rememberMe,
-                        onChanged: (bool? value) {
-                          setState(() => rememberMe = value ?? false);
-                        },
+                      InputField(
+                        labelTxt: 'Técnico',
+                        controller: userNameController,
                       ),
-                      CustomSubTitle(title: 'Salvar Login e Senha?'),
+                      InputField(
+                        obscureText: true,
+                        labelTxt: 'Senha',
+                        controller: passwordController,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Checkbox(
+                            activeColor: CustomColors.btnColor,
+                            value: rememberMe,
+                            onChanged: (bool? value) {
+                              setState(() => rememberMe = value ?? false);
+                            },
+                          ),
+                          const CustomSubTitle(title: 'Salvar Login e Senha?'),
+                        ],
+                      ),
+                      actionWidget,
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const CustomSubTitle(title: 'Não tem uma conta?'),
+                          const SizedBox(width: 10),
+                          CustomSubTitle(
+                            title: 'Cadastre-se',
+                            color: CustomColors.registerColor,
+                          ),
+                        ],
+                      ),
                     ],
                   ),
-                  CustomButton(txtBtn: 'Entrar', onTap: login),
-                  SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CustomSubTitle(title: 'Não tem uma conta?'),
-                      SizedBox(width: 10),
-                      CustomSubTitle(
-                        title: 'Cadastre-se',
-                        color: CustomColors.registerColor,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                );
+              },
             ),
           ),
         ],
