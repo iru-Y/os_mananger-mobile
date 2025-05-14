@@ -1,4 +1,5 @@
 import 'package:easy_os_mobile/colors/custom_colors.dart';
+import 'package:easy_os_mobile/manangement/store_balance.dart';
 import 'package:easy_os_mobile/orders/show_orders.dart';
 import 'package:easy_os_mobile/routes/app_routes.dart';
 import 'package:easy_os_mobile/widgets/custom_modal_bottom_sheet.dart';
@@ -20,6 +21,22 @@ class OrdersBody extends StatelessWidget {
       builder: (BuildContext context) {
         return CustomModalBottomSheet(
           child: const CreateOrder(),
+        );
+      },
+    );
+  }
+
+  void _showStoreBalance(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isDismissible: true,
+      enableDrag: true,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      barrierColor: Colors.black54,
+      builder: (BuildContext context) {
+        return CustomModalBottomSheet(
+          child: const StoreBalance(),
         );
       },
     );
@@ -55,6 +72,10 @@ class OrdersBody extends StatelessWidget {
           child: Divider(height: 0.5, thickness: 0.5, color: Colors.white),
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.trending_up),
+            onPressed: () => _showStoreBalance(context),
+          ),
           IconButton(
             icon: const Icon(Icons.post_add),
             onPressed: () => _showCreateOrderModal(context),

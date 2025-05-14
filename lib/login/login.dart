@@ -4,6 +4,7 @@ import 'package:easy_os_mobile/domain/secure_storage/secure_storage_service.dart
 import 'package:easy_os_mobile/routes/app_routes.dart';
 import 'package:easy_os_mobile/text/custom_sub_title.dart';
 import 'package:easy_os_mobile/text/custom_title.dart';
+import 'package:easy_os_mobile/widgets/custom_alert_dialog.dart';
 import 'package:easy_os_mobile/widgets/custom_button.dart';
 import 'package:easy_os_mobile/widgets/form_wrapper.dart';
 import 'package:easy_os_mobile/widgets/input_field.dart';
@@ -67,18 +68,9 @@ class _LoginState extends State<Login> {
       showDialog(
         context: context,
         builder:
-            (_) => AlertDialog(
-              title: Text('Erro'),
-              content: Text(
-                'Erro ao fazer login, verifique suas credenciais e tente novamente.',
-              ),
-              actions: [
-                IconButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  icon: Icon(Icons.close),
-                ),
-              ],
-            ),
+            (_) => CustomAlertDialog(title: 'Erro ao fazer login',
+             content: 'Verifique se o login e senha estão corretos',
+             isError: true,)
       );
     }
   }

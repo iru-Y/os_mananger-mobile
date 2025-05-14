@@ -6,13 +6,14 @@ class CustomAlertDialog extends StatelessWidget {
   final String content;
   final String confirmText;
   final String cancelText;
-
+  final bool? isError;
   const CustomAlertDialog({
     super.key,
     required this.title,
     required this.content,
     this.confirmText = 'Confirmar',
-    this.cancelText = 'Cancelar',
+    this.cancelText = 'Cancelar', 
+    this.isError,
   });
 
   static Future<bool?> show(
@@ -47,11 +48,15 @@ class CustomAlertDialog extends StatelessWidget {
         style: const TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.bold,
+          fontSize: 32,
         ),
       ),
-      content: Text(content, style: const TextStyle(color: Colors.white70)),
+      content: Text(
+        content,
+        style: const TextStyle(color: Colors.white70, fontSize: 20),
+      ),
       actions: [
-        if (cancelText.isNotEmpty)
+        if (cancelText.isNotEmpty && isError == false)
           TextButton(
             onPressed: () => Navigator.pop(context, false),
             style: TextButton.styleFrom(foregroundColor: CustomColors.btnColor),
