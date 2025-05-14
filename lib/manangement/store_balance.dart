@@ -33,17 +33,30 @@ class _StoreBalanceState extends State<StoreBalance> {
         } else if (snapshot.hasData) {
           final balance = snapshot.data!;
           return FormWrapper(
-            child: Column(
+            child:  Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+              
+               Column(
+               children: [
+                   const Text(
                   'Saldo disponível:',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  'R\$ ${balance}',
+                  'R\$ ${balance.totalCostPrice}',
+                  style: const TextStyle(fontSize: 24, color: Colors.green),
+                ),Text(
+                  'R\$ ${balance.totalService}',
+                  style: const TextStyle(fontSize: 24, color: Colors.green),
+                ),Text(
+                  'R\$ ${balance.totalProfit}',
                   style: const TextStyle(fontSize: 24, color: Colors.green),
                 ),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.5,),
+               ],
+               
+               )
               ],
             ),
           );
