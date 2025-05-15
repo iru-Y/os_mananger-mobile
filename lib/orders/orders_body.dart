@@ -19,9 +19,7 @@ class OrdersBody extends StatelessWidget {
       backgroundColor: Colors.transparent,
       barrierColor: Colors.black54,
       builder: (BuildContext context) {
-        return CustomModalBottomSheet(
-          child: const CreateOrder(),
-        );
+        return CustomModalBottomSheet(child: const CreateOrder());
       },
     );
   }
@@ -35,9 +33,7 @@ class OrdersBody extends StatelessWidget {
       backgroundColor: Colors.transparent,
       barrierColor: Colors.black54,
       builder: (BuildContext context) {
-        return CustomModalBottomSheet(
-          child: const StoreBalance(),
-        );
+        return CustomModalBottomSheet(child: const StoreBalance());
       },
     );
   }
@@ -61,12 +57,11 @@ class OrdersBody extends StatelessWidget {
           fontSize: 20,
           fontWeight: FontWeight.w600,
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 12),
+          child: Image.asset('assets/logo/logo.png'),
         ),
+
         bottom: const PreferredSize(
           preferredSize: Size.fromHeight(0.5),
           child: Divider(height: 0.5, thickness: 0.5, color: Colors.white),

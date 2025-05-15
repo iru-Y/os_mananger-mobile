@@ -1,9 +1,8 @@
-import 'package:easy_os_mobile/domain/api/customer_api.dart';
 import 'package:easy_os_mobile/domain/api/monthly_summary_api.dart';
-import 'package:easy_os_mobile/domain/schema/customer_response.dart';
 import 'package:easy_os_mobile/domain/schema/monthly_summary_response.dart';
 import 'package:flutter/material.dart';
-import 'package:easy_os_mobile/widgets/form_wrapper.dart';
+import 'package:easy_os_mobile/colors/custom_colors.dart';
+import 'package:easy_os_mobile/widgets/custom_alert_dialog.dart';
 
 class StoreBalance extends StatefulWidget {
   const StoreBalance({super.key});
@@ -13,7 +12,22 @@ class StoreBalance extends StatefulWidget {
 }
 
 class _StoreBalanceState extends State<StoreBalance> {
-  MonthlySummaryApi monthlySummaryApi = MonthlySummaryApi();
+  final MonthlySummaryApi monthlySummaryApi = MonthlySummaryApi();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<void> _showError(String msg) {
+    return CustomAlertDialog.show(
+      context,
+      title: 'Erro',
+      content: msg,
+      confirmText: 'OK',
+      cancelText: '',
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,48 +35,71 @@ class _StoreBalanceState extends State<StoreBalance> {
       future: monthlySummaryApi.getMonthlySummary(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: CircularProgressIndicator(),
-          );
-        } else if (snapshot.hasError) {
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text('Erro ao carregar saldo: ${snapshot.error}'),
-          );
-        } else if (snapshot.hasData) {
-          final balance = snapshot.data!;
-          return FormWrapper(
-            child:  Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-              
-               Column(
-               children: [
-                   const Text(
-                  'Saldo disponível:',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  'R\$ ${balance.totalCostPrice}',
-                  style: const TextStyle(fontSize: 24, color: Colors.green),
-                ),Text(
-                  'R\$ ${balance.totalService}',
-                  style: const TextStyle(fontSize: 24, color: Colors.green),
-                ),Text(
-                  'R\$ ${balance.totalProfit}',
-                  style: const TextStyle(fontSize: 24, color: Colors.green),
-                ),
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.5,),
-               ],
-               
-               )
-              ],
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return Center(
+            child: Text(
+              'Erro ao carregar o saldo:\n${snapshot.error}',
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.red),
             ),
           );
-        } else {
-          return const Text('Nenhum dado disponível.');
         }
+
+        final summary = snapshot.data;
+        if (summary == null) {
+          return const Center(child: Text('Nenhum dado disponível'));
+        }
+
+        return RefreshIndicator(
+          onRefresh: () async => monthlySummaryApi.getMonthlySummary(),
+          child: ListView(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            children: [
+              Card(
+                elevation: 10,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                  side: BorderSide(color: CustomColors.outlineBorder),
+                ),
+                margin: const EdgeInsets.only(top: 120, left: 20, right: 20),
+                color: CustomColors.backgroundFormColor,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 26,
+                    horizontal: 20,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Resumo financeiro do mês',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        "Custos de manutenção: R\$ ${summary.totalCostPrice}",
+                        style: const TextStyle(fontSize: 20),
+                      ),
+                      Text(
+                        "Total de serviços: R\$ ${summary.totalService}",
+                        style: const TextStyle(fontSize: 20),
+                      ),
+                      Text(
+                        "Lucro total: R\$ ${summary.totalProfit}",
+                        style: const TextStyle(fontSize: 20),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
       },
     );
   }

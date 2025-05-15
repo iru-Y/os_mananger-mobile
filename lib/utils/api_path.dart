@@ -1,3 +1,3 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:easy_os_mobile/utils/dot_env_profiles.dart';
 
-final apiPath = dotenv.env['API_PATH_ONLINE'];
+final apiPath = local;
