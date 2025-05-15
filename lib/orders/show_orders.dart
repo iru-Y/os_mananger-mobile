@@ -2,6 +2,7 @@ import 'package:easy_os_mobile/domain/schema/customer_response.dart';
 import 'package:easy_os_mobile/orders/edit_order.dart';
 import 'package:easy_os_mobile/widgets/custom_modal_bottom_sheet.dart';
 import 'package:easy_os_mobile/widgets/custom_alert_dialog.dart';
+import 'package:easy_os_mobile/widgets/loading_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_os_mobile/colors/custom_colors.dart';
 import 'package:easy_os_mobile/domain/api/customer_api.dart';
@@ -74,7 +75,7 @@ class _ShowOrdersState extends State<ShowOrders> {
         future: _futureCustomers,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const LoadingAnimation(size: 120);
           }
           if (snapshot.hasError) {
             return Center(

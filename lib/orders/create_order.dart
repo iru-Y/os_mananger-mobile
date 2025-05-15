@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_os_mobile/widgets/loading_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -126,7 +127,7 @@ class _CreateOrderState extends State<CreateOrder> {
         future: _futureSubmit,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const LoadingAnimation(size: 120);
           } else if (snapshot.hasError) {
             return SingleChildScrollView(
               child: FormWrapper(

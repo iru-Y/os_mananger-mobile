@@ -8,7 +8,9 @@ import 'package:easy_os_mobile/widgets/custom_alert_dialog.dart';
 import 'package:easy_os_mobile/widgets/custom_button.dart';
 import 'package:easy_os_mobile/widgets/form_wrapper.dart';
 import 'package:easy_os_mobile/widgets/input_field.dart';
+import 'package:easy_os_mobile/widgets/loading_animation.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:logger/logger.dart';
 
 class Login extends StatefulWidget {
@@ -98,7 +100,7 @@ class _LoginState extends State<Login> {
                 Widget actionWidget;
 
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  actionWidget = const CircularProgressIndicator();
+                  actionWidget = const LoadingAnimation(size: 40);
                 } else {
                   actionWidget = CustomButton(txtBtn: 'Entrar', onTap: login);
                 }

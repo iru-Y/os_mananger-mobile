@@ -1,5 +1,6 @@
 import 'package:easy_os_mobile/domain/api/monthly_summary_api.dart';
 import 'package:easy_os_mobile/domain/schema/monthly_summary_response.dart';
+import 'package:easy_os_mobile/widgets/loading_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_os_mobile/colors/custom_colors.dart';
 import 'package:easy_os_mobile/widgets/custom_alert_dialog.dart';
@@ -35,7 +36,7 @@ class _StoreBalanceState extends State<StoreBalance> {
       future: monthlySummaryApi.getMonthlySummary(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return LoadingAnimation(size: 120);
         }
         if (snapshot.hasError) {
           return Center(
