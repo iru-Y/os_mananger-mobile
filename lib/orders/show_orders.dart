@@ -6,6 +6,8 @@ import 'package:easy_os_mobile/widgets/loading_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_os_mobile/colors/custom_colors.dart';
 import 'package:easy_os_mobile/domain/api/customer_api.dart';
+import 'package:material_dialogs/dialogs.dart';
+import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
 
 class ShowOrders extends StatefulWidget {
   const ShowOrders({super.key});
@@ -146,12 +148,38 @@ class _ShowOrdersState extends State<ShowOrders> {
                         IconButton(
                           icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () async {
-                            final confirm = await CustomAlertDialog.show(
-                              context,
-                              title: 'Confirmar exclusão',
-                              content: 'Deseja excluir este cliente?',
-                              confirmText: 'Excluir',
-                              cancelText: 'Cancelar',
+                            bool confirm = false;
+
+                            await Dialogs.materialDialog(
+                              color: CustomColors.backgroundColor,
+                              context: context,
+                              title: "Confirmar exclusão",
+                              msg: "Deseja excluir este cliente?",
+                              titleAlign: TextAlign.center,
+                              msgAlign: TextAlign.center,
+                              actions: [
+                                IconsOutlineButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  text: 'Cancelar',
+                                  iconData: Icons.cancel_outlined,
+                                  textStyle: const TextStyle(
+                                    color: Colors.grey,
+                                  ),
+                                  iconColor: Colors.grey,
+                                ),
+                                IconsOutlineButton(
+                                  onPressed: () {
+                                    confirm = true;
+                                    Navigator.pop(context);
+                                  },
+                                  text: 'Excluir',
+                                  iconData: Icons.delete,
+                                  textStyle: const TextStyle(color: Colors.red),
+                                  iconColor: Colors.red,
+                                ),
+                              ],
                             );
                             if (confirm == true) {
                               final deleted = await _customerApi.deleteCustomer(

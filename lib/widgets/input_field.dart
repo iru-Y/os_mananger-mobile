@@ -22,6 +22,8 @@ class InputField extends StatelessWidget {
     this.maxLines = 1,
   });
 
+  
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -42,6 +44,8 @@ class InputField extends StatelessWidget {
             validator: validator,
             maxLines: maxLines,
             decoration: InputDecoration(
+              hoverColor: CustomColors.btnColor,
+              focusColor: CustomColors.btnColor,
               contentPadding: const EdgeInsets.symmetric(
                 vertical: 12,
                 horizontal: 12,
