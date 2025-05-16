@@ -4,56 +4,64 @@ Easy OS Mobile é um aplicativo Flutter projetado para gerenciar ordens de servi
 
 ## Funcionalidades
 
-- **Login Seguro**: Autenticação com suporte a armazenamento seguro de tokens.
-- **Gerenciamento de Ordens**: Criação, edição e exclusão de ordens de serviço.
-- **Integração com API**: Comunicação com APIs REST para manipulação de dados de clientes e ordens.
-- **Interface Personalizada**: Uso de fontes customizadas e cores personalizadas para uma experiência visual aprimorada.
+- Cadastro, edição e exclusão de ordens de serviço
+- Autenticação de usuários
+- Gerenciamento de clientes
+- Integração com APIs externas
+- Interface intuitiva e responsiva
+- Suporte multiplataforma (Android, iOS, Web, Desktop)
 
 ## Estrutura do Projeto
 
-A estrutura principal do projeto é organizada da seguinte forma:
-
 ```
-lib/
-├── colors/                # Definições de cores personalizadas
-├── domain/                # Lógica de domínio e APIs
-├── login/                 # Tela de login
-├── orders/                # Funcionalidades relacionadas a ordens de serviço
-├── routes/                # Definições de rotas
-├── text/                  # Componentes de texto customizados
-├── utils/                 # Utilitários e constantes
-├── widgets/               # Widgets reutilizáveis
+.
+├── android/           # Projeto Android nativo
+├── assets/            # Imagens, fontes e outros recursos
+├── ios/               # Projeto iOS nativo
+├── lib/               # Código fonte principal do Flutter
+├── linux/             # Projeto Linux
+├── macos/             # Projeto macOS
+├── test/              # Testes automatizados
+├── web/               # Projeto Web
+├── windows/           # Projeto Windows
+├── pubspec.yaml       # Dependências e configurações do projeto
+└── README.md          # Documentação principal
 ```
 
 ## Tecnologias Utilizadas
 
-- **Flutter**: Framework principal para desenvolvimento do aplicativo.
-- **Dart**: Linguagem de programação utilizada no Flutter.
-- **HTTP**: Para comunicação com APIs REST.
-- **Flutter Secure Storage**: Para armazenamento seguro de tokens.
-- **Mask Text Input Formatter**: Para formatação de entradas de texto.
+- [Flutter](https://flutter.dev/) (Dart)
+- Integração com APIs REST
+- Gerenciamento de estado (ex: Provider, Riverpod ou Bloc)
+- SQLite ou outro banco local (se aplicável)
 
 ## Configuração do Ambiente
 
-1. Certifique-se de ter o Flutter instalado. Consulte a [documentação oficial](https://docs.flutter.dev/get-started/install) para instruções.
+1. Instale o [Flutter](https://docs.flutter.dev/get-started/install) em sua máquina.
 2. Clone este repositório:
    ```bash
-   git clone https://github.com/seu-usuario/easy_os_mobile.git
+   git clone https://github.com/iru-Y/os_mananger-mobile
+   cd easy_os_mobile
    ```
 3. Instale as dependências:
    ```bash
    flutter pub get
    ```
-4. Configure as variáveis de ambiente no arquivo `.env` (exemplo fornecido no projeto).
+4. Configure um emulador ou conecte um dispositivo físico.
 
 ## Execução do Projeto
 
-Para rodar o projeto, utilize o comando:
+Para rodar o aplicativo em modo debug:
+
 ```bash
 flutter run
 ```
 
-Certifique-se de que um dispositivo ou emulador esteja configurado e conectado.
+Para rodar os testes automatizados:
+
+```bash
+flutter test
+```
 
 ## Contribuição
 
