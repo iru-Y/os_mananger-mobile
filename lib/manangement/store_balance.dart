@@ -13,11 +13,21 @@ class StoreBalance extends StatefulWidget {
 }
 
 class _StoreBalanceState extends State<StoreBalance> {
-  final MonthlySummaryApi monthlySummaryApi = MonthlySummaryApi();
+  final MonthlySummaryApi _api = MonthlySummaryApi();
+  late Future<MonthlySummaryResponse?> _futureSummary;
+  bool _errorShown = false;
 
   @override
   void initState() {
     super.initState();
+    _loadSummary();
+  }
+
+  void _loadSummary() {
+    setState(() {
+      _errorShown = false;
+      _futureSummary = _api.getMonthlySummary();
+    });
   }
 
   Future<void> _showError(String msg) {
@@ -27,39 +37,58 @@ class _StoreBalanceState extends State<StoreBalance> {
       content: msg,
       confirmText: 'OK',
       cancelText: '',
+      isError: true,
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<MonthlySummaryResponse?>(
-      future: monthlySummaryApi.getMonthlySummary(),
+      future: _futureSummary,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return LoadingAnimation(size: 120);
+          return const Center(child: LoadingAnimation(size: 120));
         }
-        if (snapshot.hasError) {
-          _showError("Erro ao carregar informações de movimentação do mês");
+
+        if (snapshot.hasError && !_errorShown) {
+          _errorShown = true;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _showError('Erro ao carregar informações do mês');
+          });
+          return const SizedBox.shrink();
         }
 
         final summary = snapshot.data;
         if (summary == null) {
-          _showError("Nenhum dado disponível");
+          if (!_errorShown) {
+            _errorShown = true;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _showError('Nenhum dado disponível');
+            });
+          }
+          return const SizedBox.shrink();
         }
 
+        final cost = summary.totalCostPrice ?? 'Sem informações';
+        final service = summary.totalService ?? 'Sem informações';
+        final profit = summary.totalProfit ?? 'Sem informações';
+
         return RefreshIndicator(
-          onRefresh: () async => monthlySummaryApi.getMonthlySummary(),
+          onRefresh: () async {
+            _loadSummary();
+            await _futureSummary;
+          },
           child: ListView(
             padding: const EdgeInsets.symmetric(vertical: 20),
             children: [
               Card(
                 elevation: 10,
+                color: CustomColors.backgroundFormColor,
+                margin: const EdgeInsets.only(top: 120, left: 20, right: 20),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5),
                   side: BorderSide(color: CustomColors.outlineBorder),
                 ),
-                margin: const EdgeInsets.only(top: 120, left: 20, right: 20),
-                color: CustomColors.backgroundFormColor,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     vertical: 26,
@@ -77,18 +106,15 @@ class _StoreBalanceState extends State<StoreBalance> {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        "Custos de manutenção: R\$ ${summary?.totalCostPrice}" ??
-                            "Sem informações",
+                        'Custos de manutenção: R\$ $cost',
                         style: const TextStyle(fontSize: 20),
                       ),
                       Text(
-                        "Total de serviços: R\$ ${summary?.totalService} " ??
-                            "Sem informações",
+                        'Total de serviços: R\$ $service',
                         style: const TextStyle(fontSize: 20),
                       ),
                       Text(
-                        "Lucro total: R\$ ${summary?.totalProfit}" ??
-                            "Sem informações",
+                        'Lucro total: R\$ $profit',
                         style: const TextStyle(fontSize: 20),
                       ),
                     ],
