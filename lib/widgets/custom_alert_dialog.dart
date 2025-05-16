@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_os_mobile/colors/custom_colors.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'dart:async';
 
 class CustomAlertDialog {
   static Future<bool?> show(
@@ -10,12 +11,12 @@ class CustomAlertDialog {
     String confirmText = 'Confirmar',
     String cancelText = 'Cancelar',
     bool isError = false,
-  }) async {
-    bool? confirmed;
+  }) {
+    final completer = Completer<bool?>();
 
-    await AwesomeDialog(
+    AwesomeDialog(
       context: context,
-      dialogType: isError ? DialogType.error : DialogType.warning,
+      dialogType: isError ? DialogType.error : DialogType.success,
       animType: AnimType.scale,
       headerAnimationLoop: false,
       title: title,
@@ -29,14 +30,13 @@ class CustomAlertDialog {
       ),
       descTextStyle: const TextStyle(color: Colors.white70, fontSize: 18),
       dialogBorderRadius: BorderRadius.circular(5),
-      btnCancelText: cancelText,
-      btnOkText: confirmText,
 
       btnCancel:
           isError
-              ? TextButton.icon(
+              ? null
+              : TextButton.icon(
                 onPressed: () {
-                  confirmed = false;
+                  completer.complete(false);
                   Navigator.of(context).pop();
                 },
                 icon: const Icon(Icons.cancel_outlined, color: Colors.grey),
@@ -45,38 +45,27 @@ class CustomAlertDialog {
                   style: const TextStyle(color: Colors.grey),
                 ),
                 style: TextButton.styleFrom(
-                  backgroundColor: Colors.transparent,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4), // Menos arredondado
+                    borderRadius: BorderRadius.circular(4),
                     side: const BorderSide(color: Colors.grey),
                   ),
                 ),
-              )
-              : SizedBox(),
+              ),
+
       btnOk: ElevatedButton.icon(
         onPressed: () {
-          confirmed = true;
+          completer.complete(true);
           Navigator.of(context).pop();
         },
         icon: const Icon(Icons.check_circle_outline, color: Colors.white),
         label: Text(confirmText, style: const TextStyle(color: Colors.white)),
         style: ElevatedButton.styleFrom(
-          backgroundColor: isError ? Colors.red : CustomColors.registerColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4), // Menos arredondado
-          ),
+          backgroundColor: CustomColors.registerColor,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
         ),
       ),
-      btnCancelOnPress: () {
-        confirmed = false;
-      },
-      btnOkOnPress: () {
-        confirmed = true;
-      },
-      btnCancelColor: Colors.grey,
-      btnOkColor: isError ? Colors.red : CustomColors.registerColor,
     ).show();
 
-    return confirmed;
+    return completer.future;
   }
 }

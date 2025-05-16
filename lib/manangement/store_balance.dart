@@ -4,6 +4,7 @@ import 'package:easy_os_mobile/widgets/loading_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_os_mobile/colors/custom_colors.dart';
 import 'package:easy_os_mobile/widgets/custom_alert_dialog.dart';
+import 'package:easy_os_mobile/text/custom_sub_title.dart';
 
 class StoreBalance extends StatefulWidget {
   const StoreBalance({super.key});
@@ -74,6 +75,7 @@ class _StoreBalanceState extends State<StoreBalance> {
         final profit = summary.totalProfit ?? 'Sem informações';
 
         return RefreshIndicator(
+          color: CustomColors.btnColor,
           onRefresh: () async {
             _loadSummary();
             await _futureSummary;
@@ -97,26 +99,14 @@ class _StoreBalanceState extends State<StoreBalance> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Resumo financeiro do mês',
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      const CustomSubTitle(
+                        title: 'Resumo financeiro do mês',
+                        color: Colors.white,
                       ),
                       const SizedBox(height: 16),
-                      Text(
-                        'Custos de manutenção: R\$ $cost',
-                        style: const TextStyle(fontSize: 20),
-                      ),
-                      Text(
-                        'Total de serviços: R\$ $service',
-                        style: const TextStyle(fontSize: 20),
-                      ),
-                      Text(
-                        'Lucro total: R\$ $profit',
-                        style: const TextStyle(fontSize: 20),
-                      ),
+                      CustomSubTitle(title: 'Custos de manutenção: R\$ $cost'),
+                      CustomSubTitle(title: 'Total de serviços: R\$ $service'),
+                      CustomSubTitle(title: 'Lucro total: R\$ $profit'),
                     ],
                   ),
                 ),

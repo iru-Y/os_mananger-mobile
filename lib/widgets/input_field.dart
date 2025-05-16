@@ -22,8 +22,6 @@ class InputField extends StatelessWidget {
     this.maxLines = 1,
   });
 
-  
-
   @override
   Widget build(BuildContext context) {
     return Padding(
