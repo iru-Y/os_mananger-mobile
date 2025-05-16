@@ -67,14 +67,12 @@ class _LoginState extends State<Login> {
     } catch (e, stack) {
       logger.e('Erro no login', error: e, stackTrace: stack);
       if (!mounted) return;
-      showDialog(
-        context: context,
-        builder:
-            (_) => CustomAlertDialog(
-              title: 'Erro ao fazer login',
-              content: 'Verifique se o login e senha estão corretos',
-              isError: true,
-            ),
+      CustomAlertDialog.show(
+        context,
+        title: 'Erro ao fazer login',
+        content: 'Verifique se o login e senha estão corretos',
+        cancelText: 'Ok',
+        isError: true
       );
     }
   }

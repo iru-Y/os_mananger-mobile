@@ -6,8 +6,7 @@ import 'package:easy_os_mobile/widgets/loading_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_os_mobile/colors/custom_colors.dart';
 import 'package:easy_os_mobile/domain/api/customer_api.dart';
-import 'package:material_dialogs/dialogs.dart';
-import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
+import 'package:easy_os_mobile/text/custom_sub_title.dart';
 
 class ShowOrders extends StatefulWidget {
   const ShowOrders({super.key});
@@ -39,6 +38,7 @@ class _ShowOrdersState extends State<ShowOrders> {
       content: msg,
       confirmText: 'OK',
       cancelText: '',
+      isError: true,
     );
   }
 
@@ -77,25 +77,27 @@ class _ShowOrdersState extends State<ShowOrders> {
         future: _futureCustomers,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const LoadingAnimation(size: 120);
+            return const Center(child: LoadingAnimation(size: 120));
           }
           if (snapshot.hasError) {
             return Center(
-              child: Text(
-                'Erro ao carregar clientes:\n${snapshot.error}',
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.red),
+              child: CustomSubTitle(
+                title: 'Erro ao carregar clientes:\n${snapshot.error}',
+                color: Colors.red,
               ),
             );
           }
           final customers = snapshot.data;
           if (customers == null || customers.isEmpty) {
-            return const Center(child: Text('Nenhum cliente encontrado'));
+            return const Center(
+              child: CustomSubTitle(title: 'Nenhum cliente encontrado'),
+            );
           }
 
           return RefreshIndicator(
             onRefresh: () async => _fetchCustomers(),
             child: ListView.builder(
+              padding: const EdgeInsets.symmetric(vertical: 20),
               itemCount: customers.length,
               itemBuilder: (context, index) {
                 final customer = customers[index];
@@ -118,87 +120,78 @@ class _ShowOrdersState extends State<ShowOrders> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "Nome: ${customer.fullName}",
-                                style: const TextStyle(fontSize: 20),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  CustomSubTitle(
+                                    title: 'Ordem de serviço: ${customer.id}',
+                                    color: Colors.white,
+                                  ),
+                                  Row(
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(Icons.edit),
+                                        onPressed:
+                                            () => _showEditModal(customer),
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.delete,
+                                          color: Colors.red,
+                                        ),
+                                        onPressed: () async {
+                                          final confirm =
+                                              await CustomAlertDialog.show(
+                                                context,
+                                                title: 'Confirmar exclusão',
+                                                content:
+                                                    'Deseja excluir este cliente?',
+                                                confirmText: 'Excluir',
+                                                cancelText: 'Cancelar',
+                                              );
+                                          if (confirm == true) {
+                                            final deleted = await _customerApi
+                                                .deleteCustomer(customer.id!);
+                                            if (deleted) {
+                                              await CustomAlertDialog.show(
+                                                context,
+                                                title: 'Sucesso',
+                                                content:
+                                                    'Cliente excluído com sucesso',
+                                                confirmText: 'OK',
+                                                cancelText: '',
+                                              );
+                                              _fetchCustomers();
+                                            } else {
+                                              await _showError(
+                                                'Erro ao excluir cliente',
+                                              );
+                                            }
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                              Text(
-                                "Telefone: ${customer.phone}",
-                                style: const TextStyle(fontSize: 20),
+                              const SizedBox(height: 12),
+                              CustomSubTitle(
+                                title: 'Nome: ${customer.fullName}',
                               ),
-                              Text(
-                                "Email: ${customer.email}",
-                                style: const TextStyle(fontSize: 20),
+                              CustomSubTitle(
+                                title: 'Telefone: ${customer.phone}',
                               ),
-                              Text(
-                                "Problema encontrado: ${customer.description}",
-                                style: const TextStyle(fontSize: 20),
+                              CustomSubTitle(title: 'Email: ${customer.email}'),
+                              CustomSubTitle(
+                                title:
+                                    'Problema encontrado: ${customer.description}',
                               ),
-                              Text(
-                                "Preço: R\$ ${customer.profit}",
-                                style: const TextStyle(fontSize: 20),
+                              CustomSubTitle(
+                                title: 'Preço: R\$ ${customer.profit}',
                               ),
                             ],
                           ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed: () => _showEditModal(customer),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () async {
-                            bool confirm = false;
-
-                            await Dialogs.materialDialog(
-                              color: CustomColors.backgroundColor,
-                              context: context,
-                              title: "Confirmar exclusão",
-                              msg: "Deseja excluir este cliente?",
-                              titleAlign: TextAlign.center,
-                              msgAlign: TextAlign.center,
-                              actions: [
-                                IconsOutlineButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  text: 'Cancelar',
-                                  iconData: Icons.cancel_outlined,
-                                  textStyle: const TextStyle(
-                                    color: Colors.grey,
-                                  ),
-                                  iconColor: Colors.grey,
-                                ),
-                                IconsOutlineButton(
-                                  onPressed: () {
-                                    confirm = true;
-                                    Navigator.pop(context);
-                                  },
-                                  text: 'Excluir',
-                                  iconData: Icons.delete,
-                                  textStyle: const TextStyle(color: Colors.red),
-                                  iconColor: Colors.red,
-                                ),
-                              ],
-                            );
-                            if (confirm == true) {
-                              final deleted = await _customerApi.deleteCustomer(
-                                customer.id!,
-                              );
-                              if (deleted) {
-                                await CustomAlertDialog.show(
-                                  context,
-                                  title: 'Sucesso',
-                                  content: 'Cliente excluído com sucesso',
-                                  confirmText: 'OK',
-                                  cancelText: '',
-                                );
-                                _fetchCustomers();
-                              } else {
-                                await _showError('Erro ao excluir cliente');
-                              }
-                            }
-                          },
                         ),
                       ],
                     ),

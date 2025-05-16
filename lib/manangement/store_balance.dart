@@ -39,18 +39,12 @@ class _StoreBalanceState extends State<StoreBalance> {
           return LoadingAnimation(size: 120);
         }
         if (snapshot.hasError) {
-          return Center(
-            child: Text(
-              'Erro ao carregar o saldo:\n${snapshot.error}',
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.red),
-            ),
-          );
+          _showError("Erro ao carregar informações de movimentação do mês");
         }
 
         final summary = snapshot.data;
         if (summary == null) {
-          return const Center(child: Text('Nenhum dado disponível'));
+          _showError("Nenhum dado disponível");
         }
 
         return RefreshIndicator(
@@ -83,15 +77,18 @@ class _StoreBalanceState extends State<StoreBalance> {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        "Custos de manutenção: R\$ ${summary.totalCostPrice}",
+                        "Custos de manutenção: R\$ ${summary?.totalCostPrice}" ??
+                            "Sem informações",
                         style: const TextStyle(fontSize: 20),
                       ),
                       Text(
-                        "Total de serviços: R\$ ${summary.totalService}",
+                        "Total de serviços: R\$ ${summary?.totalService} " ??
+                            "Sem informações",
                         style: const TextStyle(fontSize: 20),
                       ),
                       Text(
-                        "Lucro total: R\$ ${summary.totalProfit}",
+                        "Lucro total: R\$ ${summary?.totalProfit}" ??
+                            "Sem informações",
                         style: const TextStyle(fontSize: 20),
                       ),
                     ],

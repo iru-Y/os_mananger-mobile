@@ -1,75 +1,82 @@
 import 'package:flutter/material.dart';
 import 'package:easy_os_mobile/colors/custom_colors.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
-class CustomAlertDialog extends StatelessWidget {
-  final String title;
-  final String content;
-  final String confirmText;
-  final String cancelText;
-  final bool? isError;
-  const CustomAlertDialog({
-    super.key,
-    required this.title,
-    required this.content,
-    this.confirmText = 'Confirmar',
-    this.cancelText = 'Cancelar', 
-    this.isError,
-  });
-
+class CustomAlertDialog {
   static Future<bool?> show(
     BuildContext context, {
     required String title,
     required String content,
     String confirmText = 'Confirmar',
     String cancelText = 'Cancelar',
-  }) {
-    return showDialog<bool>(
-      context: context,
-      builder:
-          (context) => CustomAlertDialog(
-            title: title,
-            content: content,
-            confirmText: confirmText,
-            cancelText: cancelText,
-          ),
-    );
-  }
+    bool isError = false,
+  }) async {
+    bool? confirmed;
 
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      backgroundColor: CustomColors.backgroundFormColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: CustomColors.outlineBorder),
+    await AwesomeDialog(
+      context: context,
+      dialogType: isError ? DialogType.error : DialogType.warning,
+      animType: AnimType.scale,
+      headerAnimationLoop: false,
+      title: title,
+      desc: content,
+      borderSide: BorderSide(color: CustomColors.outlineBorder, width: 2),
+      dialogBackgroundColor: CustomColors.backgroundFormColor,
+      titleTextStyle: const TextStyle(
+        color: Colors.white,
+        fontSize: 24,
+        fontWeight: FontWeight.bold,
       ),
-      title: Text(
-        title,
-        style: const TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 32,
+      descTextStyle: const TextStyle(color: Colors.white70, fontSize: 18),
+      dialogBorderRadius: BorderRadius.circular(5),
+      btnCancelText: cancelText,
+      btnOkText: confirmText,
+
+      btnCancel:
+          isError
+              ? TextButton.icon(
+                onPressed: () {
+                  confirmed = false;
+                  Navigator.of(context).pop();
+                },
+                icon: const Icon(Icons.cancel_outlined, color: Colors.grey),
+                label: Text(
+                  cancelText,
+                  style: const TextStyle(color: Colors.grey),
+                ),
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4), // Menos arredondado
+                    side: const BorderSide(color: Colors.grey),
+                  ),
+                ),
+              )
+              : SizedBox(),
+      btnOk: ElevatedButton.icon(
+        onPressed: () {
+          confirmed = true;
+          Navigator.of(context).pop();
+        },
+        icon: const Icon(Icons.check_circle_outline, color: Colors.white),
+        label: Text(confirmText, style: const TextStyle(color: Colors.white)),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: isError ? Colors.red : CustomColors.registerColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4), // Menos arredondado
+          ),
         ),
       ),
-      content: Text(
-        content,
-        style: const TextStyle(color: Colors.white70, fontSize: 20),
-      ),
-      actions: [
-        if (cancelText.isNotEmpty && isError == false)
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            style: TextButton.styleFrom(foregroundColor: CustomColors.btnColor),
-            child: Text(cancelText),
-          ),
-        TextButton(
-          onPressed: () => Navigator.pop(context, true),
-          style: TextButton.styleFrom(
-            foregroundColor: CustomColors.registerColor,
-          ),
-          child: Text(confirmText),
-        ),
-      ],
-    );
+      btnCancelOnPress: () {
+        confirmed = false;
+      },
+      btnOkOnPress: () {
+        confirmed = true;
+      },
+      btnCancelColor: Colors.grey,
+      btnOkColor: isError ? Colors.red : CustomColors.registerColor,
+    ).show();
+
+    return confirmed;
   }
 }
