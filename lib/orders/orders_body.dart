@@ -2,6 +2,7 @@ import 'package:easy_os_mobile/colors/custom_colors.dart';
 import 'package:easy_os_mobile/manangement/store_balance.dart';
 import 'package:easy_os_mobile/orders/show_orders.dart';
 import 'package:easy_os_mobile/routes/app_routes.dart';
+import 'package:easy_os_mobile/widgets/custom_alert_dialog.dart';
 import 'package:easy_os_mobile/widgets/custom_modal_bottom_sheet.dart';
 import 'package:easy_os_mobile/domain/secure_storage/secure_storage_service.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,17 @@ class OrdersBody extends StatelessWidget {
       builder: (BuildContext context) {
         return CustomModalBottomSheet(child: const StoreBalance());
       },
+    );
+  }
+
+  Future<bool?> _showLogoutConfirm(BuildContext context) {
+    return CustomAlertDialog.show(
+      context,
+      title: "Deseja sair?",
+      content: "Você será redirecionado ",
+      cancelText: "Não",
+      confirmText: "Sim",
+      isError: false,
     );
   }
 
@@ -77,7 +89,12 @@ class OrdersBody extends StatelessWidget {
           ),
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () => _logout(context),
+            onPressed: () async {
+              var confirmed = await _showLogoutConfirm(context);
+              if (confirmed == true) {
+                await _logout(context);
+              }
+            },
           ),
         ],
       ),

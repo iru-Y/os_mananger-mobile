@@ -11,12 +11,20 @@ class CustomAlertDialog {
     String confirmText = 'Confirmar',
     String cancelText = 'Cancelar',
     bool isError = false,
+    bool isInfo = false,
   }) {
     final completer = Completer<bool?>();
 
+    final DialogType type =
+        isError
+            ? DialogType.error
+            : isInfo
+            ? DialogType.info
+            : DialogType.success;
+
     AwesomeDialog(
       context: context,
-      dialogType: isError ? DialogType.error : DialogType.success,
+      dialogType: type,
       animType: AnimType.scale,
       headerAnimationLoop: false,
       title: title,
@@ -32,7 +40,7 @@ class CustomAlertDialog {
       dialogBorderRadius: BorderRadius.circular(5),
 
       btnCancel:
-          isError
+          (isError)
               ? null
               : TextButton.icon(
                 onPressed: () {
@@ -60,7 +68,8 @@ class CustomAlertDialog {
         icon: const Icon(Icons.check_circle_outline, color: Colors.white),
         label: Text(confirmText, style: const TextStyle(color: Colors.white)),
         style: ElevatedButton.styleFrom(
-          backgroundColor: CustomColors.registerColor,
+          backgroundColor:
+              isInfo ? CustomColors.outlineBorder : CustomColors.registerColor,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
         ),
       ),
