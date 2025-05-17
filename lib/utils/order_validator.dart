@@ -7,13 +7,14 @@ class OrderValidator {
 
   static String? validatePhone(String v, MaskTextInputFormatter mask) {
     if (v.trim().isEmpty) return 'O telefone é obrigatório';
-    if (!mask.isFill()) return 'Telefone inválido';
+    final phoneRegex = RegExp(r'^\(\d{2}\) \d{5}-\d{4}$');
+    if (!phoneRegex.hasMatch(v.trim())) return 'Telefone inválido';
     return null;
   }
 
   static String? validateEmail(String v) {
     if (v.trim().isEmpty) return 'O email é obrigatório';
-    final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+\$');
+    final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
     return emailRegex.hasMatch(v.trim()) ? null : 'Email inválido';
   }
 

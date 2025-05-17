@@ -53,12 +53,16 @@ class OrderForm extends StatelessWidget {
             InputField(
               labelTxt: 'Custo do serviço',
               controller: cost,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
             ),
             InputField(
               labelTxt: 'Valor do serviço',
               controller: service,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
             ),
             const SizedBox(height: 20),
             CustomButton(txtBtn: 'Salvar', onTap: onSubmit),
