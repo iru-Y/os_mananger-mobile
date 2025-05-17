@@ -19,11 +19,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      
-      theme: ThemeData(
 
+      theme: ThemeData(
         textTheme: TextTheme(
-          
           bodyMedium: TextStyle(
             color: Colors.white,
             fontFamily: 'Work_Sans',

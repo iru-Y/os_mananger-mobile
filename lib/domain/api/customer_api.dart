@@ -25,7 +25,7 @@ class CustomerApi {
 
     if (response == null) return null;
     if (response.statusCode == 200) {
-      final jsonResponse = jsonDecode(response.body);
+      final jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
       return CustomerModel.fromJson(jsonResponse);
     } else {
       logger.e('Erro no GET detail: ${response.statusCode} - ${response.body}');
@@ -73,7 +73,7 @@ class CustomerApi {
     if (response == null) return null;
 
     if (response.statusCode == 200) {
-      final jsonResponse = jsonDecode(response.body) as List;
+      final jsonResponse = jsonDecode(utf8.decode(response.bodyBytes)) as List;
       final customers =
           jsonResponse.map((item) => CustomerResponse.fromJson(item)).toList();
       logger.i('Clientes recuperados: ${customers.length}');
