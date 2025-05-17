@@ -46,7 +46,7 @@ class OrdersBody extends StatelessWidget {
       content: "Você será redirecionado ",
       cancelText: "Não",
       confirmText: "Sim",
-      isError: false,
+      isInfo: true
     );
   }
 

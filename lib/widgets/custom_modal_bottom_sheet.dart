@@ -14,21 +14,13 @@ class CustomModalBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {},
-      child: Material(
-        color: Colors.transparent,
-        child: GestureDetector(
-          onTap: () {
-            Navigator.of(context).pop();
-          },
-          child: Container(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).size.height * 0.2,
-            ),
-            child: child,
-          ),
+    return Material(
+      color: Colors.transparent,
+      child: Container(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).size.height * 0.2,
         ),
+        child: child,
       ),
     );
   }

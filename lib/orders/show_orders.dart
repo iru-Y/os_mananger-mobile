@@ -111,9 +111,11 @@ class _ShowOrdersState extends State<ShowOrders> {
                   margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                   color: CustomColors.backgroundFormColor,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 26,
-                      horizontal: 20,
+                    padding: const EdgeInsets.only(
+                      top: 7,
+                     bottom: 26,
+                     left: 20,
+                     right: 20
                     ),
                     child: Row(
                       children: [
@@ -125,10 +127,12 @@ class _ShowOrdersState extends State<ShowOrders> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  CustomSubTitle(
-                                    title: 'Ordem de serviço: ${customer.id}',
+                                  Text('Ordem de serviço: ${customer.id}',
+                                  style: TextStyle(
                                     color: Colors.white,
+                                    fontSize: 20
                                   ),
+                                    ),
                                   Row(
                                     children: [
                                       IconButton(
@@ -150,6 +154,7 @@ class _ShowOrdersState extends State<ShowOrders> {
                                                     'Deseja excluir este cliente?',
                                                 confirmText: 'Excluir',
                                                 cancelText: 'Cancelar',
+                                                isInfo: true
                                               );
                                           if (confirm == true) {
                                             final deleted = await _customerApi
