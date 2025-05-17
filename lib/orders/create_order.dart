@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:easy_os_mobile/widgets/loading_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 
 import 'package:easy_os_mobile/domain/model/customer_model.dart';
 import 'package:easy_os_mobile/domain/api/customer_api.dart';
@@ -12,6 +12,7 @@ import 'package:easy_os_mobile/widgets/form_wrapper.dart';
 import 'package:easy_os_mobile/widgets/custom_button.dart';
 import 'package:easy_os_mobile/widgets/custom_alert_dialog.dart';
 import 'package:easy_os_mobile/widgets/input_field.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class CreateOrder extends StatefulWidget {
   const CreateOrder({super.key});
@@ -27,8 +28,9 @@ class _CreateOrderState extends State<CreateOrder> {
   final _phoneController = TextEditingController();
   final _emailController = TextEditingController();
   final _descriptionController = TextEditingController();
-  final _costPriceController = TextEditingController();
-  final _servicePriceController = TextEditingController();
+
+  late MoneyMaskedTextController _costPriceController;
+  late MoneyMaskedTextController _servicePriceController;
 
   final _customerApi = CustomerApi();
 
@@ -38,10 +40,23 @@ class _CreateOrderState extends State<CreateOrder> {
     mask: '(##) #####-####',
     filter: {"#": RegExp(r'\d')},
   );
-  final _priceMask = MaskTextInputFormatter(
-    mask: '#########.##',
-    filter: {"#": RegExp(r'\d')},
-  );
+
+  @override
+  void initState() {
+    super.initState();
+    _costPriceController = MoneyMaskedTextController(
+      decimalSeparator: '.',
+      thousandSeparator: '',
+      precision: 2,
+      initialValue: 0,
+    );
+    _servicePriceController = MoneyMaskedTextController(
+      decimalSeparator: '.',
+      thousandSeparator: '',
+      precision: 2,
+      initialValue: 0,
+    );
+  }
 
   Future<bool> _submitOrder() async {
     final customerModel = CustomerModel(
@@ -49,9 +64,10 @@ class _CreateOrderState extends State<CreateOrder> {
       phone: _phoneController.text.trim(),
       email: _emailController.text.trim(),
       description: _descriptionController.text.trim(),
-      costPrice: _costPriceController.text.trim(),
-      servicePrice: _servicePriceController.text.trim(),
+      costPrice: _costPriceController.text.replaceAll(',', '.').trim(),
+      servicePrice: _servicePriceController.text.replaceAll(',', '.').trim(),
     );
+
     await _customerApi.postUser(customerModel);
     return true;
   }
@@ -66,9 +82,6 @@ class _CreateOrderState extends State<CreateOrder> {
     ).then((_) {});
   }
 
-  bool _isNumeric(String s) {
-    return double.tryParse(s.replaceAll(',', '.')) != null;
-  }
 
   void _onTapSubmit() {
     if (_futureSubmit != null) return;
@@ -89,7 +102,7 @@ class _CreateOrderState extends State<CreateOrder> {
       _showError('O email é obrigatório');
       return;
     }
-    final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
+    final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+\$');
     if (!emailRegex.hasMatch(_emailController.text.trim())) {
       _showError('Email inválido');
       return;
@@ -98,20 +111,12 @@ class _CreateOrderState extends State<CreateOrder> {
       _showError('A descrição do problema é obrigatória');
       return;
     }
-    if (_costPriceController.text.trim().isEmpty) {
+    if (_costPriceController.numberValue == 0) {
       _showError('O custo do serviço é obrigatório');
       return;
     }
-    if (!_isNumeric(_costPriceController.text.trim())) {
-      _showError('Custo do serviço deve ser numérico');
-      return;
-    }
-    if (_servicePriceController.text.trim().isEmpty) {
+    if (_servicePriceController.numberValue == 0) {
       _showError('O preço do serviço é obrigatório');
-      return;
-    }
-    if (!_isNumeric(_servicePriceController.text.trim())) {
-      _showError('Preço do serviço deve ser numérico');
       return;
     }
 
@@ -134,7 +139,7 @@ class _CreateOrderState extends State<CreateOrder> {
                 child: Column(
                   children: [
                     Text(
-                      'Erro ao criar pedido:\n${snapshot.error}',
+                      'Erro ao criar pedido:\n\${snapshot.error}',
                       style: const TextStyle(color: Colors.red),
                       textAlign: TextAlign.center,
                     ),
@@ -190,20 +195,12 @@ class _CreateOrderState extends State<CreateOrder> {
               InputField(
                 labelTxt: 'Custo do serviço',
                 controller: _costPriceController,
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'[\d,\.]')),
-                  _priceMask,
-                ],
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
               ),
               InputField(
-                labelTxt: 'Preço do serviço',
+                labelTxt: 'Valor do serviço',
                 controller: _servicePriceController,
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'[\d,\.]')),
-                  _priceMask,
-                ],
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
               ),
               const SizedBox(height: 20),
               CustomButton(txtBtn: 'Criar', onTap: _onTapSubmit),

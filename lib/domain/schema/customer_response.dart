@@ -4,12 +4,14 @@ part 'customer_response.g.dart';
 
 @JsonSerializable()
 class CustomerResponse {
-  int? id;              
+  int? id;
   String? email;
   @JsonKey(name: "full_name")
   String? fullName;
   String? phone;
   String? description;
+  @JsonKey(name: 'service_price')
+  String? servicePrice;
   String? profit;
 
   CustomerResponse({
@@ -18,6 +20,7 @@ class CustomerResponse {
     this.fullName,
     this.phone,
     this.description,
+    this.servicePrice,
     this.profit,
   });
 

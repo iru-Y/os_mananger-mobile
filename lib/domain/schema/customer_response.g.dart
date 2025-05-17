@@ -14,6 +14,7 @@ CustomerResponse _$CustomerResponseFromJson(Map<String, dynamic> json) =>
       phone: json['phone'] as String?,
       description: json['description'] as String?,
       profit: json['profit'] as String?,
+      servicePrice: json['service_price'] as String?,
     );
 
 Map<String, dynamic> _$CustomerResponseToJson(CustomerResponse instance) =>

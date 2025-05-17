@@ -54,7 +54,7 @@ class _ShowOrdersState extends State<ShowOrders> {
       return;
     }
 
-    showModalBottomSheet(
+    final updated = await showModalBottomSheet<bool>(
       context: context,
       isDismissible: true,
       enableDrag: true,
@@ -62,12 +62,13 @@ class _ShowOrdersState extends State<ShowOrders> {
       backgroundColor: Colors.transparent,
       barrierColor: Colors.black54,
       builder: (_) {
-        return CustomModalBottomSheet(
-          onDismiss: _fetchCustomers,
-          child: EditOrder(customer: model),
-        );
+        return CustomModalBottomSheet(child: EditOrder(customer: model));
       },
     );
+
+    if (updated == true) {
+      _fetchCustomers();
+    }
   }
 
   @override
@@ -188,7 +189,7 @@ class _ShowOrdersState extends State<ShowOrders> {
                                     'Problema encontrado: ${customer.description}',
                               ),
                               CustomSubTitle(
-                                title: 'Preço: R\$ ${customer.profit}',
+                                title: 'Preço: R\$ ${customer.servicePrice}',
                               ),
                             ],
                           ),

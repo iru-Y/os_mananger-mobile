@@ -84,12 +84,9 @@ class CustomerApi {
     }
   }
 
-  Future<CustomerModel?> patchCustomer(
-    int id,
-    Map<String, dynamic> updates,
-  ) async {
+  Future<CustomerModel?> patchCustomer(int id, CustomerModel customer) async {
     final url = Uri.parse('$apiPath/customers/$id/');
-    final body = jsonEncode(updates);
+    final body = jsonEncode(customer.toJson());
 
     final response = await _authenticatedRequestWithRetry(
       (token) => http.patch(
@@ -105,9 +102,9 @@ class CustomerApi {
     if (response == null) return null;
 
     if (response.statusCode == 200) {
-      final jsonResponse = jsonDecode(response.body);
+      final jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
       final updatedCustomer = CustomerModel.fromJson(jsonResponse);
-      logger.i('Cliente atualizado: ${response.body}');
+      logger.i('Cliente atualizado: $jsonResponse');
       return updatedCustomer;
     } else {
       logger.e('Erro no PATCH: ${response.statusCode} - ${response.body}');
